@@ -5,28 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="88874637-65e0-4a96-84aa-c9030d19f652" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/Branch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/Branch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/InventoryBatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/InventoryBatch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/StockTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/StockTransaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/Warehouse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/Warehouse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/Branch.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/Branch.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/InventoryBatch.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/InventoryBatch.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/StockTransaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/StockTransaction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/Warehouse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/Warehouse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/service/InventoryService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/service/InventoryService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/CommonMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/CommonMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductMapperImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
