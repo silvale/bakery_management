@@ -5,9 +5,15 @@ services:
     environment:
       POSTGRES_DB: bakery_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
+    # Thêm đoạn này để kiểm tra trạng thái DB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bakery_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
@@ -15,8 +21,9 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy # Chỉ chạy app khi db đã "healthy"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bakery_db
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_DATASOURCE_PASSWORD: postgres

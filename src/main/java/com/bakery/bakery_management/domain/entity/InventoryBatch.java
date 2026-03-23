@@ -17,11 +17,6 @@ import java.time.LocalDate;
         }))
 public class InventoryBatch extends JpaEntityAuditable<Long> {
 
-    @Id
-    @Column(name = "id", length = 64)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "product_code")
     private String productCode;
 

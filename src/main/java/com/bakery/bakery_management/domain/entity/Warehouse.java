@@ -11,11 +11,6 @@ import lombok.Setter;
 @Setter
 public class Warehouse extends JpaEntityAuditable<Long> {
 
-    @Id
-    @Column(name = "id", length = 64)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "branch_code")
     private String branchCode;
 

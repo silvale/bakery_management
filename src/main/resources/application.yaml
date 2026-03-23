@@ -1,13 +1,14 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/bakery_db
+    # Thêm tham số connectTimeout và socketTimeout để App kiên nhẫn hơn
+    url: jdbc:postgresql://localhost:5433/bakery_db?connectTimeout=30&socketTimeout=30
     username: postgres
-    password: 123456
-
+    password: postgres
   jpa:
+    # Ép kiểu Dialect để không cần Hibernate đi dò tìm nữa (Fix lỗi Dialect)
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-    show-sql: true
 
 server:
   port: 8080

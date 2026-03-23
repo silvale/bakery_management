@@ -10,11 +10,6 @@ import lombok.Setter;
 @Setter
 public class Branch extends JpaEntityAuditable<Long> {
 
-    @Id
-    @Column(name = "id", length = 64)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "code")
     private String code;
 
