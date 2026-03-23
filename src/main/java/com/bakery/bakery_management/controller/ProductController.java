@@ -1,14 +1,16 @@
 package com.bakery.bakery_management.controller;
 
+import com.bakery.bakery_management.domain.PageResult;
 import com.bakery.bakery_management.domain.dto.Request.ProductRequest;
 import com.bakery.bakery_management.domain.dto.Response.ProductResponse;
 import com.bakery.bakery_management.service.ProductService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
@@ -27,8 +29,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductResponse> list() {
-        return service.getList();
+    public ResponseEntity<PageResult<ProductResponse>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return ResponseEntity.ok(service.getList(pageable));
     }
 
     @PatchMapping("/{id}")

@@ -1,9 +1,12 @@
 package com.bakery.bakery_management.service.Impl;
 
+import com.bakery.bakery_management.domain.PageResult;
 import com.bakery.bakery_management.exception.BusinessException;
 import com.bakery.bakery_management.mapper.AdminBaseMapper;
 import com.bakery.bakery_management.service.AdminBaseService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,9 +54,16 @@ public abstract class AdminBaseServiceImpl<E, Req, Res, ID>
     // ===== LIST =====
     @Override
     @Transactional(readOnly = true)
-    public List<Res> getList() {
-        List<E> list = getRepository().findAll().stream().toList();
-        return (List<Res>) getMapper().toResponse(list);
+    public PageResult<Res> getList(Pageable pageable) {
+        // 1. Lấy Page Entity từ Repository (truy vấn có phân trang offset/limit)
+        Page<E> entityPage = getRepository().findAll(pageable);
+
+        // 2. Dùng Mapper để chuyển đổi từng phần tử trong Page
+        // Spring Page hỗ trợ hàm .map() rất tiện lợi
+        Page<Res> responsePage = entityPage.map(entity -> getMapper().toResponse(entity));
+
+        // 3. Trả về định dạng PageResult bạn đã thiết kế
+        return PageResult.ofPage(responsePage);
     }
 
     // ===== UPDATE (PATCH style) =====

@@ -25,9 +25,11 @@ com/bakery/bakery_management/domain/entity/Unit.class
 com/bakery/bakery_management/domain/dto/Request/ProductRequest$ProductRequestBuilder.class
 com/bakery/bakery_management/mapper/CommonMapperImpl.class
 com/bakery/bakery_management/domain/entity/Recipe.class
+com/bakery/bakery_management/domain/PageResult$PageResultBuilder.class
 com/bakery/bakery_management/domain/entity/InventoryBatch.class
 com/bakery/bakery_management/domain/enums/WarehouseType.class
 com/bakery/bakery_management/service/Impl/ProductServiceImpl.class
+com/bakery/bakery_management/domain/PageResult$PageMeta.class
 com/bakery/bakery_management/domain/enums/StatusCode.class
 com/bakery/bakery_management/controller/ProductController.class
 com/bakery/bakery_management/domain/dto/Response/ProductResponse.class
@@ -39,12 +41,14 @@ com/bakery/bakery_management/mapper/AdminBaseMapper.class
 com/bakery/bakery_management/BakeryManagementApplication.class
 com/bakery/bakery_management/domain/entity/StockTransaction.class
 com/bakery/bakery_management/domain/enums/PriceType.class
+com/bakery/bakery_management/domain/PageResult$PageMeta$PageMetaBuilder.class
 com/bakery/bakery_management/domain/enums/ReferenceType.class
 com/bakery/bakery_management/domain/dto/BaseResponse.class
 com/bakery/bakery_management/repository/ProductRepository.class
 com/bakery/bakery_management/domain/entity/ProductionMaterial.class
 com/bakery/bakery_management/domain/enums/TransactionType.class
 com/bakery/bakery_management/mapper/ToEntity.class
+com/bakery/bakery_management/domain/PageResult.class
 com/bakery/bakery_management/domain/enums/ProductType.class
 com/bakery/bakery_management/domain/dto/Request/ProductRequest.class
 com/bakery/bakery_management/repository/StockTransactionRepository.class
