@@ -23,6 +23,7 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/BaseEntity.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/enums/WarehouseType.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/ProductMapper.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Request/UnitRequest.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/GenerateBakeryId.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/entity/Inventory.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/exception/ErrorCode.java
@@ -30,8 +31,10 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/repository/InventoryRepository.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/enums/TransactionType.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/ProductResponse.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/UnitMapper.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/entity/Branch.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/BaseResponse.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/UnitResponse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/JpaEntityAuditable.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/ImportResponse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/repository/ProductPriceRepository.java
@@ -47,11 +50,14 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/entity/Unit.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/service/ProductPriceService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/entity/Warehouse.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/controller/UnitResource.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/service/UnitService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/AdminEntitySupportService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/AdminBaseMapper.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/repository/ProductRepository.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/controller/ProductPriceResource.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/enums/PriceType.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/JpaEntity.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/repository/UnitRepository.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/service/ProductService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse.java
