@@ -1,37 +1,40 @@
 package com.bakery.bakery_management.domain.entity;
 
-import com.bakery.bakery_management.base.JpaEntityAuditable;
-import com.bakery.bakery_management.domain.enums.PriceType;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import com.bakery.bakery_management.base.JpaEntityAuditable;
 
 @Entity
-@Table(name = "product_price",
-        indexes = {
-                @Index(name = "idx_price_product", columnList = "product_code"),
-                @Index(name = "idx_price_active", columnList = "product_code, price_type, effective_to")
-        })
+@Table(name = "product_prices")
+@Getter
+@Setter
 public class ProductPrice extends JpaEntityAuditable<UUID> {
 
-    @Column(name = "product_code")
+    @Column(name = "code", unique = true, nullable = false)
+    private String code;
+
+    @Column(name = "product_code", nullable = false)
     private String productCode;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "price_type")
-    private PriceType priceType;
+    @Column(name = "unit_code")
+    private String unitCode;
 
-    @Column(name = "price")
-    private BigDecimal price;
+    @Column(name = "cost_price", precision = 19, scale = 0)
+    private BigDecimal costPrice; // Giá nhập/vốn
 
-    @Column(name = "effective_from")
-    private LocalDateTime effectiveFrom;
+    @Column(name = "sale_price", precision = 19, scale = 0)
+    private BigDecimal salePrice; // Giá bán ra
 
-    @Column(name = "effective_to")
-    private LocalDateTime effectiveTo;
+    @Column(name = "is_default")
+    private boolean isDefault = false;
 
-    @Column(name = "status")
-    private String status; // ACTIVE / INACTIVE
+    @Column(name = "applied_date")
+    private LocalDateTime appliedDate;
 }

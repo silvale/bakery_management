@@ -1,22 +1,34 @@
 package com.bakery.bakery_management.domain.dto.Request;
 
 import com.bakery.bakery_management.domain.enums.ReferenceType;
-import lombok.Getter;
-import lombok.Setter;
+import com.bakery.bakery_management.domain.enums.TransactionType;
+import com.bakery.bakery_management.domain.enums.WarehouseType;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class ImportRequest {
 
-    private String productCode;
-    private String warehouseCode;
-    private String batchNo;
-    private BigDecimal quantity;
-    private LocalDate expiryDate;
+    @NotBlank
+    private String referenceId;    // Mã phiếu nhập (ví dụ: GR-2026-001)
 
+    @NotNull
+    private WarehouseType warehouseType;
+
+    @NotNull
+    private TransactionType transactionType;
+
+    @NotNull
     private ReferenceType referenceType;
-    private String referenceId;
+
+    private String note;
+
+    @NotEmpty
+    @Valid // Đảm bảo validate từng item bên dưới
+    private List<ImportItemRequest> items;
 }

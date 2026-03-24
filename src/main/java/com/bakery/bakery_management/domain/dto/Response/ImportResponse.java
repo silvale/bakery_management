@@ -1,14 +1,16 @@
 package com.bakery.bakery_management.domain.dto.Response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class ImportResponse {
-    private UUID batchId;
-    private BigDecimal newQuantity;
+    private String referenceId;
+    private LocalDateTime importedAt; // Thời gian hệ thống ghi nhận (updated_at)
+    private int totalItems;           // Tổng số mặt hàng đã xử lý
+    private String status;            // Ví dụ: "SUCCESS"
+    private String message;           // "Nhập kho thành công cho phiếu GR-xxx"
 }

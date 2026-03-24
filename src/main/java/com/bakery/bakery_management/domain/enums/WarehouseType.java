@@ -1,6 +1,6 @@
 package com.bakery.bakery_management.domain.enums;
 
 public enum WarehouseType {
-    S, // STORE
-    K // KITCHEN
+    MAIN_STORAGE, // Kho hàng
+    KITCHEN       // Kho bếp
 }

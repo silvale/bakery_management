@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-24T15:52:08+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
+    date = "2026-03-24T21:32:00+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
@@ -27,9 +27,8 @@ public class ProductMapperImpl implements ProductMapper {
         product.setStatus( request.getStatus() );
         product.setCode( request.getCode() );
         product.setName( request.getName() );
-        product.setType( request.getType() );
         product.setUnitCode( request.getUnitCode() );
-        product.setShelfLifeDays( request.getShelfLifeDays() );
+        product.setType( request.getType() );
 
         return product;
     }
@@ -43,9 +42,8 @@ public class ProductMapperImpl implements ProductMapper {
         entity.setStatus( request.getStatus() );
         entity.setCode( request.getCode() );
         entity.setName( request.getName() );
-        entity.setType( request.getType() );
         entity.setUnitCode( request.getUnitCode() );
-        entity.setShelfLifeDays( request.getShelfLifeDays() );
+        entity.setType( request.getType() );
 
         return entity;
     }
@@ -65,14 +63,11 @@ public class ProductMapperImpl implements ProductMapper {
         if ( request.getName() != null ) {
             entity.setName( request.getName() );
         }
-        if ( request.getType() != null ) {
-            entity.setType( request.getType() );
-        }
         if ( request.getUnitCode() != null ) {
             entity.setUnitCode( request.getUnitCode() );
         }
-        if ( request.getShelfLifeDays() != null ) {
-            entity.setShelfLifeDays( request.getShelfLifeDays() );
+        if ( request.getType() != null ) {
+            entity.setType( request.getType() );
         }
 
         return entity;
@@ -94,9 +89,9 @@ public class ProductMapperImpl implements ProductMapper {
         product.setUpdatedBy( entity.getUpdatedBy() );
         product.setCode( entity.getCode() );
         product.setName( entity.getName() );
-        product.setType( entity.getType() );
+        product.setBarcode( entity.getBarcode() );
         product.setUnitCode( entity.getUnitCode() );
-        product.setShelfLifeDays( entity.getShelfLifeDays() );
+        product.setType( entity.getType() );
 
         return product;
     }
@@ -118,7 +113,6 @@ public class ProductMapperImpl implements ProductMapper {
         productResponse.setName( entity.getName() );
         productResponse.setType( entity.getType() );
         productResponse.setUnitCode( entity.getUnitCode() );
-        productResponse.setShelfLifeDays( entity.getShelfLifeDays() );
         productResponse.setStatus( entity.getStatus() );
 
         return productResponse;
@@ -147,8 +141,7 @@ public class ProductMapperImpl implements ProductMapper {
         entity.setStatus( request.getStatus() );
         entity.setCode( request.getCode() );
         entity.setName( request.getName() );
-        entity.setType( request.getType() );
         entity.setUnitCode( request.getUnitCode() );
-        entity.setShelfLifeDays( request.getShelfLifeDays() );
+        entity.setType( request.getType() );
     }
 }

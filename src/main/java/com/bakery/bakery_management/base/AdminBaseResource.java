@@ -17,13 +17,13 @@ public abstract class AdminBaseResource<REQ, RES, E extends JpaEntity<UUID>> {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody REQ request) {
-        getService().create(request);
+    public OperatorResult create(@RequestBody REQ request) {
+        return getService().create(request);
     }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable UUID id, @RequestBody  REQ request) {
-        getService().update(id, request);
+    public OperatorResult update(@PathVariable UUID id, @RequestBody REQ request) {
+        return getService().update(id, request);
     }
 
     @GetMapping("/{id}")

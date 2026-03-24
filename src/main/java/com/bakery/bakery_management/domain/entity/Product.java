@@ -16,19 +16,16 @@ import java.util.UUID;
 @Setter
 public class Product extends JpaEntityAuditable<UUID> {
 
-    @Column(name = "code")
+    @Column(unique = true, nullable = false)
     private String code;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    private ProductType type;
+    private String barcode;
 
     @Column(name = "unit_code")
     private String unitCode;
 
-    @Column(name = "shelf_life_days")
-    private Integer shelfLifeDays;
+    @Enumerated(EnumType.STRING)
+    private ProductType type;
 }

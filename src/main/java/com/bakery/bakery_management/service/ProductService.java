@@ -34,7 +34,4 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     protected AdminBaseMapper<ProductRequest, ProductResponse, Product> getMapper() {
         return this.productMapper;
     }
-
-    // Nếu sếp có yêu cầu thêm logic nghiệp vụ riêng (Business Logic)
-    // ngoài CRUD cơ bản, bạn viết thêm các method ở dưới này.
 }
