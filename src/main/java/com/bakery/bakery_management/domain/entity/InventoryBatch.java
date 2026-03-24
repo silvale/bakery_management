@@ -1,5 +1,6 @@
 package com.bakery.bakery_management.domain.entity;
 
+import com.bakery.bakery_management.base.JpaEntityAuditable;
 import com.bakery.bakery_management.domain.enums.BatchStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Setter
@@ -15,7 +17,7 @@ import java.time.LocalDate;
         uniqueConstraints = @UniqueConstraint(columnNames = {
                 "product_code", "warehouse_code", "batch_no"
         }))
-public class InventoryBatch extends JpaEntityAuditable<Long> {
+public class InventoryBatch extends JpaEntityAuditable<UUID> {
 
     @Column(name = "product_code")
     private String productCode;

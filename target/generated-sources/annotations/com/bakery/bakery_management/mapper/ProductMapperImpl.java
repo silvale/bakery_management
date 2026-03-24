@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-23T23:00:38+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
+    date = "2026-03-24T15:52:08+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
@@ -86,10 +86,10 @@ public class ProductMapperImpl implements ProductMapper {
 
         Product product = new Product();
 
-        product.setId( entity.getId() );
         product.setStatus( entity.getStatus() );
         product.setCreatedAt( entity.getCreatedAt() );
         product.setCreatedBy( entity.getCreatedBy() );
+        product.setId( entity.getId() );
         product.setUpdatedAt( entity.getUpdatedAt() );
         product.setUpdatedBy( entity.getUpdatedBy() );
         product.setCode( entity.getCode() );
@@ -109,11 +109,11 @@ public class ProductMapperImpl implements ProductMapper {
 
         ProductResponse productResponse = new ProductResponse();
 
+        productResponse.setId( entity.getId() );
         productResponse.setCreatedBy( entity.getCreatedBy() );
         productResponse.setCreatedAt( entity.getCreatedAt() );
         productResponse.setUpdatedBy( entity.getUpdatedBy() );
         productResponse.setUpdatedAt( entity.getUpdatedAt() );
-        productResponse.setId( entity.getId() );
         productResponse.setCode( entity.getCode() );
         productResponse.setName( entity.getName() );
         productResponse.setType( entity.getType() );
@@ -136,5 +136,19 @@ public class ProductMapperImpl implements ProductMapper {
         }
 
         return collection;
+    }
+
+    @Override
+    public void updateEntity(ProductRequest request, Product entity) {
+        if ( request == null ) {
+            return;
+        }
+
+        entity.setStatus( request.getStatus() );
+        entity.setCode( request.getCode() );
+        entity.setName( request.getName() );
+        entity.setType( request.getType() );
+        entity.setUnitCode( request.getUnitCode() );
+        entity.setShelfLifeDays( request.getShelfLifeDays() );
     }
 }

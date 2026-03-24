@@ -7,13 +7,14 @@ import lombok.Generated;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 
 public abstract class BaseResponse implements Serializable {
 
     @JsonFormat(
             shape = JsonFormat.Shape.STRING
     )
-    protected Long id;
+    protected UUID id;
 
     @JsonProperty(
             access = JsonProperty.Access.READ_ONLY
@@ -36,7 +37,7 @@ public abstract class BaseResponse implements Serializable {
     protected Instant updatedAt;
 
     @Generated
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
@@ -61,7 +62,7 @@ public abstract class BaseResponse implements Serializable {
     }
 
     @Generated
-    public void setId(final Long id) {
+    public void setId(final UUID id) {
         this.id = id;
     }
 

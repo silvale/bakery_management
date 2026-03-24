@@ -3,6 +3,7 @@ package com.bakery.bakery_management.repository;
 
 import com.bakery.bakery_management.domain.entity.StockTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.UUID;
 
-public interface StockTransactionRepository extends JpaRepository<StockTransaction, Long> {
+public interface StockTransactionRepository extends JpaRepository<StockTransaction, UUID> {
 }

@@ -7,16 +7,16 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 
-public interface AdminBaseService<Req, Res, ID> {
+public interface AdminBaseService<Req, Res, E> {
 
-    ID create(Req request);
-
-    Res getDetail(ID id);
-
-    PageResult<Res> getList(Pageable pageable);
-
-    void update(ID id, Req request);
-
-    void delete(ID id);
+//    UUID create(Req request);
+//
+//    Res getDetail(UUID id);
+//
+//    PageResult<Res> getList(Pageable pageable);
+//
+//    void update(UUID id, Req request);
+//
+//    void delete(UUID id);
 
 }

@@ -1,7 +1,8 @@
 package com.bakery.bakery_management.mapper;
 
 
-import common.ListingSummary;
+
+import com.bakery.bakery_management.base.ListingSummary;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -31,4 +32,6 @@ public interface AdminBaseMapper<D, R, E> {
     default R toResponse(E entity, ListingSummary summary) {
         return this.toResponse(entity);
     }
+
+    void updateEntity(D request, @MappingTarget E entity);
 }

@@ -1,5 +1,6 @@
 package com.bakery.bakery_management.domain.entity;
 
+import com.bakery.bakery_management.base.JpaEntityAuditable;
 import com.bakery.bakery_management.domain.enums.ReferenceType;
 import com.bakery.bakery_management.domain.enums.TransactionType;
 import jakarta.persistence.*;
@@ -7,12 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
 @Table(name = "stock_transaction")
 @Getter
 @Setter
-public class StockTransaction extends JpaEntityAuditable<Long> {
+public class StockTransaction extends JpaEntityAuditable<UUID> {
 
     @Column(name = "product_code")
     private String productCode;
@@ -21,7 +23,7 @@ public class StockTransaction extends JpaEntityAuditable<Long> {
     private String warehouseCode;
 
     @Column(name = "batch_id")
-    private Long batchId;
+    private UUID batchId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type")

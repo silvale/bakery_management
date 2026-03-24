@@ -8,8 +8,9 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, Long> {
+public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, UUID> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""

@@ -1,17 +1,20 @@
 package com.bakery.bakery_management.domain.entity;
 
+import com.bakery.bakery_management.base.JpaEntityAuditable;
 import com.bakery.bakery_management.domain.enums.ProductType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.UUID;
+
 @DynamicUpdate
 @Entity
 @Table(name = "product")
 @Getter
 @Setter
-public class Product extends JpaEntityAuditable<Long> {
+public class Product extends JpaEntityAuditable<UUID> {
 
     @Column(name = "code")
     private String code;

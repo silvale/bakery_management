@@ -58,12 +58,11 @@ public class InventoryService {
                 batch.setUpdatedAt(Instant.now());
             }
 
-            // 🔥 luôn insert transaction (không update)
             StockTransaction tx = new StockTransaction();
             tx.setProductCode(req.getProductCode());
             tx.setWarehouseCode(req.getWarehouseCode());
             tx.setBatchId(batch.getId());
-            tx.setTransactionType(TransactionType.I);
+            tx.setTransactionType(TransactionType.IMPORT);
             tx.setQuantity(req.getQuantity());
             tx.setReferenceType(req.getReferenceType());
             tx.setReferenceId(req.getReferenceId());

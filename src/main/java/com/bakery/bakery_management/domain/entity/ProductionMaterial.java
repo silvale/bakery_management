@@ -1,25 +1,23 @@
 package com.bakery.bakery_management.domain.entity;
 
+
+import com.bakery.bakery_management.base.JpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.UUID;
 
 @Entity
 @Table(name = "production_material")
 @Getter
 @Setter
-public class ProductionMaterial extends BaseEntity {
-
-    @Id
-    @Column(name = "id", length = 64)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ProductionMaterial extends JpaEntity<UUID> {
 
     @Column(name = "production_order_id")
-    private Long productionOrderId;
+    private UUID productionOrderId;
 
     @Column(name = "product_id")
-    private Long productId;
+    private UUID productId;
 
     @Column(name = "required_qty")
     private Double requiredQty;

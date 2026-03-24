@@ -30,6 +30,6 @@ public record PageResult<T>(List<T> items, PageMeta page) {
     }
 
     // Create PageResult from already-paginated items.
-    // public static <T> PageResult<T> ofPage(List<T> items, int page, int size, long totalElements)
+    // public static <T> PageResult<T> ofPage(List<T> items, int page, int size, UUID totalElements)
 
 }
