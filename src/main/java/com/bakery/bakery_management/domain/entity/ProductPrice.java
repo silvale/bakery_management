@@ -1,8 +1,6 @@
 package com.bakery.bakery_management.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,8 +31,12 @@ public class ProductPrice extends JpaEntityAuditable<UUID> {
     private BigDecimal salePrice; // Giá bán ra
 
     @Column(name = "is_default")
-    private boolean isDefault = false;
+    private Boolean isDefault = false;
 
     @Column(name = "applied_date")
     private LocalDateTime appliedDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_code", referencedColumnName = "code", insertable = false, updatable = false)
+    private Product product;
 }

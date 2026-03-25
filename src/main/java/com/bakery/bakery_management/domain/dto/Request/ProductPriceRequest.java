@@ -19,27 +19,24 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ProductPriceRequest {
 
-    @NotBlank(message = "Mã giá không được để trống")
-    private String code; // Ví dụ: P-BOTMI-2026-01
+    private String code;
 
     @NotBlank(message = "Mã sản phẩm không được để trống")
     private String productCode;
 
-    @NotBlank(message = "Đơn vị tính không được để trống")
     private String unitCode;
 
     @NotNull(message = "Giá vốn không được để trống")
     @PositiveOrZero
-    private BigDecimal costPrice; // Giá nhập
-
+    private BigDecimal costPrice;
     @NotNull(message = "Giá bán không được để trống")
     @PositiveOrZero
-    private BigDecimal salePrice; // Giá bán lẻ
+    private BigDecimal salePrice;
 
-    private boolean isDefault; // Đánh dấu là giá mặc định
+    private boolean isDefault;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime appliedDate; // Ngày áp dụng giá này
+    private LocalDateTime appliedDate;
 
     private StatusCode status = StatusCode.ACTIVE;
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-25T11:35:31+0700",
+    date = "2026-03-25T17:18:47+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
@@ -30,7 +30,6 @@ public class ProductPriceMapperImpl implements ProductPriceMapper {
         productPrice.setUnitCode( request.getUnitCode() );
         productPrice.setCostPrice( request.getCostPrice() );
         productPrice.setSalePrice( request.getSalePrice() );
-        productPrice.setDefault( request.isDefault() );
         productPrice.setAppliedDate( request.getAppliedDate() );
 
         return productPrice;
@@ -48,7 +47,6 @@ public class ProductPriceMapperImpl implements ProductPriceMapper {
         entity.setUnitCode( request.getUnitCode() );
         entity.setCostPrice( request.getCostPrice() );
         entity.setSalePrice( request.getSalePrice() );
-        entity.setDefault( request.isDefault() );
         entity.setAppliedDate( request.getAppliedDate() );
 
         return entity;
@@ -78,7 +76,6 @@ public class ProductPriceMapperImpl implements ProductPriceMapper {
         if ( request.getSalePrice() != null ) {
             entity.setSalePrice( request.getSalePrice() );
         }
-        entity.setDefault( request.isDefault() );
         if ( request.getAppliedDate() != null ) {
             entity.setAppliedDate( request.getAppliedDate() );
         }
@@ -105,29 +102,11 @@ public class ProductPriceMapperImpl implements ProductPriceMapper {
         productPrice.setUnitCode( entity.getUnitCode() );
         productPrice.setCostPrice( entity.getCostPrice() );
         productPrice.setSalePrice( entity.getSalePrice() );
-        productPrice.setDefault( entity.isDefault() );
+        productPrice.setIsDefault( entity.getIsDefault() );
         productPrice.setAppliedDate( entity.getAppliedDate() );
+        productPrice.setProduct( entity.getProduct() );
 
         return productPrice;
-    }
-
-    @Override
-    public ProductPriceResponse toResponse(ProductPrice entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        ProductPriceResponse.ProductPriceResponseBuilder productPriceResponse = ProductPriceResponse.builder();
-
-        productPriceResponse.code( entity.getCode() );
-        productPriceResponse.productCode( entity.getProductCode() );
-        productPriceResponse.unitCode( entity.getUnitCode() );
-        productPriceResponse.costPrice( entity.getCostPrice() );
-        productPriceResponse.salePrice( entity.getSalePrice() );
-        productPriceResponse.appliedDate( entity.getAppliedDate() );
-        productPriceResponse.status( entity.getStatus() );
-
-        return productPriceResponse.build();
     }
 
     @Override
@@ -156,7 +135,26 @@ public class ProductPriceMapperImpl implements ProductPriceMapper {
         entity.setUnitCode( request.getUnitCode() );
         entity.setCostPrice( request.getCostPrice() );
         entity.setSalePrice( request.getSalePrice() );
-        entity.setDefault( request.isDefault() );
         entity.setAppliedDate( request.getAppliedDate() );
+    }
+
+    @Override
+    public ProductPriceResponse toResponse(ProductPrice entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        ProductPriceResponse.ProductPriceResponseBuilder productPriceResponse = ProductPriceResponse.builder();
+
+        productPriceResponse.isDefault( entity.getIsDefault() );
+        productPriceResponse.code( entity.getCode() );
+        productPriceResponse.productCode( entity.getProductCode() );
+        productPriceResponse.unitCode( entity.getUnitCode() );
+        productPriceResponse.costPrice( entity.getCostPrice() );
+        productPriceResponse.salePrice( entity.getSalePrice() );
+        productPriceResponse.appliedDate( entity.getAppliedDate() );
+        productPriceResponse.status( entity.getStatus() );
+
+        return productPriceResponse.build();
     }
 }

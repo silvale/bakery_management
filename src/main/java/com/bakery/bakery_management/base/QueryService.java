@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface QueryService<RES> {
     RES getById(UUID id);
-    Page<RES> getList(Pageable pageable);
+    PageResult<RES> getList(Pageable pageable);
 }

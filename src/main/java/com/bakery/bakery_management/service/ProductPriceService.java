@@ -59,7 +59,7 @@ public class ProductPriceService extends AdminOperationService<ProductPriceReque
         if (isChanged) {
             // 3. Gỡ bỏ mặc định cũ (nếu có)
             currentPriceOpt.ifPresent(p -> {
-                p.setDefault(false);
+                p.setIsDefault(false);
                 repository.save(p);
             });
 
@@ -71,7 +71,7 @@ public class ProductPriceService extends AdminOperationService<ProductPriceReque
             newPrice.setCostPrice(cost);
             newPrice.setSalePrice(sale);
             newPrice.setAppliedDate(LocalDateTime.now());
-            newPrice.setDefault(true); // Đặt làm giá mới nhất
+            newPrice.setIsDefault(true); // Đặt làm giá mới nhất
             newPrice.setStatus(StatusCode.ACTIVE);
 
             repository.save(newPrice);

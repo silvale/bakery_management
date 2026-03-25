@@ -18,7 +18,7 @@ public class ProductPriceResponse extends BaseResponse {
     private String unitCode;
     private BigDecimal costPrice;
     private BigDecimal salePrice;
-    private boolean isDefault;
+    private Boolean isDefault;
     private LocalDateTime appliedDate;
     private StatusCode status;
 }

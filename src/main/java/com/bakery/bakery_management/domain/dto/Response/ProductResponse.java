@@ -17,7 +17,6 @@ public class ProductResponse extends BaseResponse {
     private String name;
     private ProductType type;
     private String unitCode;
-    private Integer shelfLifeDays;
     private StatusCode status;
     private List<ProductPriceResponse> prices;
     private BigDecimal currentSalesPrice;

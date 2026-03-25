@@ -33,7 +33,7 @@ public class Product extends JpaEntityAuditable<UUID> {
     private Integer defaultExpiryDays; // Dùng cho loại NUMBER
     private LocalDate fixedExpiryDate; // Dùng cho loại DATE (Hạn cố định)
 
-    @OneToMany(mappedBy = "productCode", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @OrderBy("appliedDate DESC")
     private List<ProductPrice> prices = new ArrayList<>();
 }

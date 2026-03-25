@@ -34,4 +34,10 @@ public class UnitService extends AdminOperationService<UnitRequest, UnitResponse
     protected AdminBaseMapper<UnitRequest, UnitResponse, Unit> getMapper() {
         return this.mapper;
     }
+
+
+    public boolean checkExistByCode(String code) {
+        return repository.existsByCode(code);
+    }
+
 }

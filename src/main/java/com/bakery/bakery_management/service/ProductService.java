@@ -8,7 +8,10 @@ import com.bakery.bakery_management.domain.dto.Response.ProductPriceResponse;
 import com.bakery.bakery_management.domain.dto.Response.ProductResponse;
 import com.bakery.bakery_management.domain.entity.Product;
 import com.bakery.bakery_management.domain.entity.ProductPrice;
+import com.bakery.bakery_management.domain.enums.ExpiryInputType;
 import com.bakery.bakery_management.domain.enums.StatusCode;
+import com.bakery.bakery_management.exception.BusinessException;
+import com.bakery.bakery_management.exception.ErrorCode;
 import com.bakery.bakery_management.mapper.AdminBaseMapper;
 import com.bakery.bakery_management.mapper.ProductMapper;
 import com.bakery.bakery_management.mapper.ProductPriceMapper;
@@ -18,7 +21,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class ProductService extends AdminOperationService<ProductRequest, ProductResponse, Product> {
@@ -29,13 +35,16 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     private final ProductPriceRepository priceRepository;
     private final ProductPriceMapper priceMapper;
 
+    private final UnitService unitService;
+
     // Constructor Injection
-    public ProductService(ProductRepository productRepository, ProductMapper productMapper, ProductPriceService priceService, ProductPriceRepository productPriceRepository, ProductPriceMapper priceMapper) {
+    public ProductService(ProductRepository productRepository, ProductMapper productMapper, ProductPriceService priceService, ProductPriceRepository productPriceRepository, ProductPriceMapper priceMapper, UnitService unitService) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.priceService = priceService;
         this.priceRepository = productPriceRepository;
         this.priceMapper = priceMapper;
+        this.unitService = unitService;
     }
 
     @Override
@@ -46,6 +55,25 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     @Override
     protected AdminBaseMapper<ProductRequest, ProductResponse, Product> getMapper() {
         return this.productMapper;
+    }
+
+
+    @Override
+    protected void beforeCreate(ProductRequest request, Product entity) {
+        String unitCode = request.getUnitCode();
+        boolean checkUnitExist = unitService.checkExistByCode(unitCode);
+        if (!checkUnitExist) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "Không tìm thấy Unit code : " + unitCode);
+        }
+        ExpiryInputType expiryType = request.getExpiryType();
+        if (ExpiryInputType.TODAY.equals(expiryType)) {
+            Integer expiryNumber = request.getExpiryNumber();
+            if (expiryNumber == null || expiryNumber <= 0) {
+                throw new BusinessException(ErrorCode.INVALID_INPUT, "Ngày hết hạn không hợp lệ " + expiryNumber);
+            }
+        } else if (ExpiryInputType.NONE.equals(expiryType)) {
+            request.setExpiryNumber(null);
+        }
     }
 
     @Override
@@ -88,17 +116,15 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
 
     @Override
     protected void afterDetail(Product entity, ProductResponse response) {
-        // 1. Load toàn bộ lịch sử giá (Active) của sản phẩm này
         List<ProductPrice> allPrices = priceRepository
                 .findByProductCodeAndStatusOrderByAppliedDateDesc(entity.getCode(), StatusCode.ACTIVE);
 
-        // 2. Map sang List Response và đổ vào trường 'prices'
-        List<ProductPriceResponse> priceResponses = priceMapper.toResponse(allPrices).stream().toList();;
+        List<ProductPriceResponse> priceResponses = priceMapper.toResponse(allPrices).stream().toList();
+
         response.setPrices(priceResponses);
 
-        // 3. Tìm cái nào là mặc định để hiển thị lên field giá "hiện tại" ở Header trang detail
         priceResponses.stream()
-                .filter(ProductPriceResponse::isDefault)
+                .filter(ProductPriceResponse::getIsDefault)
                 .findFirst()
                 .ifPresent(p -> {
                     response.setCurrentSalesPrice(p.getSalePrice());

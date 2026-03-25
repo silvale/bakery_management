@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -23,9 +22,7 @@ public class ProductRequest {
     private String name;
     private ProductType type;
     private String unitCode;
-    private Integer shelfLifeDays;
     private StatusCode status;
-
     private ExpiryInputType expiryType;
     private Integer expiryNumber;
 

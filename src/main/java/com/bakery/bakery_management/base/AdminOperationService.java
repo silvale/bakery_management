@@ -1,7 +1,6 @@
 package com.bakery.bakery_management.base;
 
-import com.bakery.bakery_management.domain.dto.Response.ProductResponse;
-import com.bakery.bakery_management.domain.entity.Product;
+import com.bakery.bakery_management.domain.PageResult;
 import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.bakery.bakery_management.exception.BusinessException;
 import com.bakery.bakery_management.exception.ErrorCode;
@@ -99,7 +98,7 @@ public abstract class AdminOperationService<REQ, RES, E extends JpaEntity<UUID>>
 
     @Override
     @Transactional(readOnly = true)
-    public Page<RES> getList(Pageable pageable) {
+    public PageResult<RES> getList(Pageable pageable) {
         // Bước A: Lấy dữ liệu phân trang từ DB
         Page<E> entityPage = getRepository().findAll(pageable);
 
@@ -111,8 +110,8 @@ public abstract class AdminOperationService<REQ, RES, E extends JpaEntity<UUID>>
         // Bước C: GỌI HOOK TẠI ĐÂY - Đây là nơi Hải xử lý Batch Load (như load giá)
         afterGetListProduct(entityPage.getContent(), responseList);
 
-        // Bước D: Trả về Page mới chứa dữ liệu đã được "làm giàu"
-        return new PageImpl<>(responseList, pageable, entityPage.getTotalElements());
+        return PageResult.ofPage(new PageImpl<>(responseList, pageable, entityPage.getTotalElements()));
+
     }
 
     @Override

@@ -32,7 +32,7 @@ public abstract class AdminBaseResource<REQ, RES, E extends JpaEntity<UUID>> {
     }
 
     @GetMapping
-    public Page<RES> getPage(@ParameterObject Pageable pageable) {
+    public PageResult<RES> getPage(@ParameterObject Pageable pageable) {
         return getService().getList(pageable);
     }
 
