@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-24T23:16:13+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
+    date = "2026-03-25T11:35:31+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
@@ -29,6 +29,7 @@ public class ProductMapperImpl implements ProductMapper {
         product.setName( request.getName() );
         product.setUnitCode( request.getUnitCode() );
         product.setType( request.getType() );
+        product.setExpiryType( request.getExpiryType() );
 
         return product;
     }
@@ -44,6 +45,7 @@ public class ProductMapperImpl implements ProductMapper {
         entity.setName( request.getName() );
         entity.setUnitCode( request.getUnitCode() );
         entity.setType( request.getType() );
+        entity.setExpiryType( request.getExpiryType() );
 
         return entity;
     }
@@ -69,6 +71,9 @@ public class ProductMapperImpl implements ProductMapper {
         if ( request.getType() != null ) {
             entity.setType( request.getType() );
         }
+        if ( request.getExpiryType() != null ) {
+            entity.setExpiryType( request.getExpiryType() );
+        }
 
         return entity;
     }
@@ -89,9 +94,11 @@ public class ProductMapperImpl implements ProductMapper {
         product.setUpdatedBy( entity.getUpdatedBy() );
         product.setCode( entity.getCode() );
         product.setName( entity.getName() );
-        product.setBarcode( entity.getBarcode() );
         product.setUnitCode( entity.getUnitCode() );
         product.setType( entity.getType() );
+        product.setExpiryType( entity.getExpiryType() );
+        product.setDefaultExpiryDays( entity.getDefaultExpiryDays() );
+        product.setFixedExpiryDate( entity.getFixedExpiryDate() );
 
         return product;
     }
@@ -143,5 +150,6 @@ public class ProductMapperImpl implements ProductMapper {
         entity.setName( request.getName() );
         entity.setUnitCode( request.getUnitCode() );
         entity.setType( request.getType() );
+        entity.setExpiryType( request.getExpiryType() );
     }
 }

@@ -7,22 +7,28 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
 
+    // Tìm để cộng dồn (Phương án 1: Không dùng Lot làm key)
     @Query("""
         SELECT i FROM Inventory i 
         WHERE i.productCode = :productCode 
           AND i.warehouseType = :warehouseType 
-          AND i.lotNumber = :lotNumber 
           AND i.expiryDate IS NOT DISTINCT FROM :expiryDate
     """)
-    Optional<Inventory> findByUniqueStock(
-            @Param("productCode") String productCode,
-            @Param("warehouseType") WarehouseType warehouseType,
-            @Param("lotNumber") String lotNumber,
-            @Param("expiryDate") LocalDateTime expiryDate
-    );
+    Optional<Inventory> findByUniqueStock(String productCode, WarehouseType warehouseType, LocalDateTime expiryDate);
+
+    // Tìm để xuất kho (FEFO)
+    @Query("""
+        SELECT i FROM Inventory i 
+        WHERE i.productCode = :code 
+          AND i.warehouseType = :warehouseType 
+          AND i.quantity > 0 
+        ORDER BY i.expiryDate ASC NULLS LAST
+    """)
+    List<Inventory> findAllForExport(String code, WarehouseType warehouseType);
 }

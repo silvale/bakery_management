@@ -14,35 +14,25 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "stock_transactions")
-@Getter @Setter
+@Getter
+@Setter
 public class StockTransaction extends JpaEntityAuditable<UUID> {
 
-    @Column(name = "product_code", nullable = false)
     private String productCode;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "warehouse_type")
-    private WarehouseType warehouseType; // MAIN_STORAGE hoặc KITCHEN
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "transaction_type")
-    private TransactionType transactionType; // IMPORT, EXPORT, ADJUST
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "reference_type")
-    private ReferenceType referenceType; // PURCHASE_IMPORT, PRODUCTION_EXPORT...
-
-    @Column(precision = 19, scale = 3)
-    private BigDecimal quantity; // Số lượng biến động (Luôn lưu số dương, logic cộng/trừ dựa vào TransactionType)
-
-    @Column(name = "unit_code")
+    private String referenceId; // Mã phiếu nhập/xuất
+    private BigDecimal quantity; // Nhập (+), Xuất (-)
     private String unitCode;
+    private String lotNumber;
+    private LocalDateTime expiryDate;
 
-    @Column(name = "lot_number")
-    private String lotNumber; // ID của phiếu nhập gốc
+    @Enumerated(EnumType.STRING)
+    private WarehouseType warehouseType;
 
-    @Column(name = "reference_id")
-    private String referenceId; // ID của phiếu cụ thể (Phiếu nhập, Phiếu xuất...)
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType; // IMPORT, EXPORT
 
-    private String note; // Ghi chú chi tiết nếu cần
+    @Enumerated(EnumType.STRING)
+    private ReferenceType referenceType;
+
+    private String note;
 }

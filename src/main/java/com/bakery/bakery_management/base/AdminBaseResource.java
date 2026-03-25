@@ -3,6 +3,7 @@ package com.bakery.bakery_management.base;
 
 import com.bakery.bakery_management.domain.PageResult;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,18 +31,9 @@ public abstract class AdminBaseResource<REQ, RES, E extends JpaEntity<UUID>> {
         return getService().getById(id);
     }
 
-    //    @GetMapping
-//    public PageResult<RES> getPage(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "id") String sortBy) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-//        return getService().getPage(pageable);
-//    }
     @GetMapping
-    public PageResult<RES> getPage(@ParameterObject Pageable pageable) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        return getService().getPage(pageable);
+    public Page<RES> getPage(@ParameterObject Pageable pageable) {
+        return getService().getList(pageable);
     }
 
     @DeleteMapping("/{id}")

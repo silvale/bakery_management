@@ -1,5 +1,6 @@
 package com.bakery.bakery_management.domain.dto.Request;
 
+import com.bakery.bakery_management.domain.enums.ExpiryInputType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,27 +9,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class ImportItemRequest {
 
-    @NotBlank
     private String productCode;
-
-    @NotNull
-    @Positive
     private BigDecimal quantity;
-
-    @NotBlank
     private String unitCode;
+    private String lotNumber;
 
-    @NotBlank
-    private String lotNumber; // String ID
+    // Control Expiry từ FE
+    private ExpiryInputType expiryType;
+    private Integer manualExpiryDays;
+    private LocalDateTime manualExpiryDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime expiryDate;
+    // Price sync
+    private BigDecimal costPrice;
 
-    private String code; // Có thể null -> lấy Default Price
 }

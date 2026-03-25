@@ -1,130 +1,150 @@
 package com.bakery.bakery_management.service;
 
 
+import com.bakery.bakery_management.domain.dto.Request.ExportItemRequest;
+import com.bakery.bakery_management.domain.dto.Request.ExportRequest;
 import com.bakery.bakery_management.domain.dto.Request.ImportItemRequest;
 import com.bakery.bakery_management.domain.dto.Request.ImportRequest;
 import com.bakery.bakery_management.domain.dto.Response.ImportResponse;
 import com.bakery.bakery_management.domain.entity.Inventory;
 import com.bakery.bakery_management.domain.entity.Product;
-import com.bakery.bakery_management.domain.entity.ProductPrice;
 import com.bakery.bakery_management.domain.entity.StockTransaction;
+import com.bakery.bakery_management.domain.enums.ExpiryInputType;
+import com.bakery.bakery_management.domain.enums.ReferenceType;
+import com.bakery.bakery_management.domain.enums.TransactionType;
+import com.bakery.bakery_management.domain.enums.WarehouseType;
 import com.bakery.bakery_management.exception.BusinessException;
 import com.bakery.bakery_management.exception.ErrorCode;
 import com.bakery.bakery_management.repository.InventoryRepository;
-import com.bakery.bakery_management.repository.ProductPriceRepository;
 import com.bakery.bakery_management.repository.ProductRepository;
 import com.bakery.bakery_management.repository.StockTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
 public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
-    private final StockTransactionRepository stockTransactionRepository;
+    private final StockTransactionRepository transactionRepository;
     private final ProductRepository productRepository;
-    private final ProductPriceRepository priceRepository;
+    private final ProductPriceService priceService; // Service xử lý sync giá
 
+    // --- NHẬP KHO ---
     @Transactional
     public ImportResponse processImport(ImportRequest request) {
-        // 1. Validate Sản phẩm
-        Set<String> productCodes = request.getItems().stream()
-                .map(ImportItemRequest::getProductCode)
-                .collect(Collectors.toSet());
+        for (ImportItemRequest item : request.getItems()) {
+            Product product = productRepository.findByCode(item.getProductCode())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
 
-        List<Product> products = productRepository.findByCodeIn(productCodes);
-        Map<String, Product> productMap = products.stream()
-                .collect(Collectors.toMap(Product::getCode, p -> p));
+            LocalDateTime finalExpiry = calculateExpiry(product, item);
 
-        if (products.size() != productCodes.size()) {
-            productCodes.removeAll(productMap.keySet());
-            // Sử dụng BusinessException thay vì RuntimeException
-            throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "Các mã sản phẩm không tồn tại: " + productCodes);
+            // 1. Sync Price
+            priceService.syncPrice(product.getCode(), item.getUnitCode(), item.getCostPrice(), BigDecimal.ZERO, product.getType());
+
+            // 2. Update Inventory
+            Inventory inv = inventoryRepository.findByUniqueStock(product.getCode(), request.getWarehouseType(), finalExpiry)
+                    .orElseGet(() -> createNewInventory(item, request.getWarehouseType(), finalExpiry));
+            inv.setQuantity(inv.getQuantity().add(item.getQuantity()));
+            inventoryRepository.save(inv);
+
+            // 3. Save Transaction
+            saveTx(request.getReferenceId(), item.getProductCode(), item.getQuantity(),
+                    item.getLotNumber(), finalExpiry, request.getWarehouseType(), TransactionType.IMPORT, request.getReferenceType());
         }
 
-        // 2. Xử lý từng Item
-        for (ImportItemRequest item : request.getItems()) {
-            Product product = productMap.get(item.getProductCode());
+        return buildImportResponse(request);
+    }
 
-            // 2.1. Validate Unit
-            if (!product.getUnitCode().equals(item.getUnitCode())) {
-                throw new BusinessException(ErrorCode.INVALID_UNIT,
-                        String.format("Sai đơn vị cho mã %s. Yêu cầu: %s", item.getProductCode(), product.getUnitCode()));
+    // --- XUẤT KHO (FEFO) ---
+    @Transactional
+    public void processExport(ExportRequest request) {
+        for (ExportItemRequest item : request.getItems()) {
+            Product product = productRepository.findByCode(item.getProductCode())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
+
+            // Sync giá bán nếu có
+            if (item.getSalePrice() != null) {
+                priceService.syncPrice(product.getCode(), item.getUnitCode(), BigDecimal.ZERO, item.getSalePrice(), product.getType());
             }
 
-            // 2.2. Lấy thông tin giá (Lấy mã giá cụ thể hoặc Default)
-            ProductPrice price = findApplicablePrice(item);
+            // Logic FEFO trừ kho
+            BigDecimal remaining = item.getQuantity();
+            List<Inventory> stocks = inventoryRepository.findAllForExport(product.getCode(), request.getWarehouseType());
 
-            // 3. Ghi log Transaction
-            saveStockTransaction(request, item, price);
+            for (Inventory stock : stocks) {
+                if (remaining.compareTo(BigDecimal.ZERO) <= 0) break;
+                BigDecimal take = stock.getQuantity().min(remaining);
 
-            // 4. Cập nhật Tồn kho
-            updateInventoryStock(request, item);
+                stock.setQuantity(stock.getQuantity().subtract(take));
+                remaining = remaining.subtract(take);
+
+                saveTx(request.getReferenceId(), item.getProductCode(), take.negate(),
+                        stock.getLotNumber(), stock.getExpiryDate(), request.getWarehouseType(), TransactionType.EXPORT, request.getReferenceType());
+                inventoryRepository.save(stock);
+            }
+
+            if (remaining.compareTo(BigDecimal.ZERO) > 0) {
+                throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK, "Thiếu hàng cho mã: " + product.getCode());
+            }
         }
+    }
 
+    private LocalDateTime calculateExpiry(Product p, ImportItemRequest item) {
+        ExpiryInputType type = item.getExpiryType() != null ? item.getExpiryType() : p.getExpiryType();
+        if (type == ExpiryInputType.NONE || type == null) return null;
+        return switch (type) {
+            case TODAY -> LocalDateTime.now().with(LocalTime.MAX);
+            case DATE ->
+                    item.getManualExpiryDate() != null ? item.getManualExpiryDate() : p.getFixedExpiryDate().atTime(LocalTime.MAX);
+            case NUMBER ->
+                    LocalDateTime.now().plusDays(item.getManualExpiryDays() != null ? item.getManualExpiryDays() : p.getDefaultExpiryDays());
+            default -> null;
+        };
+    }
+
+    private void saveTx(String refId, String pCode, BigDecimal qty, String lot, LocalDateTime exp, WarehouseType wType, TransactionType tType, ReferenceType rType) {
+        StockTransaction tx = new StockTransaction();
+        tx.setReferenceId(refId);
+        tx.setProductCode(pCode);
+        tx.setQuantity(qty);
+        tx.setLotNumber(lot);
+        tx.setExpiryDate(exp);
+        tx.setWarehouseType(wType);
+        tx.setTransactionType(tType);
+        tx.setReferenceType(rType);
+        transactionRepository.save(tx);
+    }
+
+    private Inventory createNewInventory(ImportItemRequest item, WarehouseType warehouseType, LocalDateTime expiryDate) {
+        Inventory inv = new Inventory();
+        inv.setProductCode(item.getProductCode());
+        inv.setWarehouseType(warehouseType);
+        inv.setUnitCode(item.getUnitCode());
+        inv.setExpiryDate(expiryDate);
+        inv.setLotNumber(item.getLotNumber()); // Lưu số lô của lần nhập đầu tiên để tham chiếu
+        inv.setQuantity(BigDecimal.ZERO); // Sẽ được cộng dồn ở hàm gọi
+        return inv;
+    }
+
+    private ImportResponse buildImportResponse(ImportRequest request) {
         return ImportResponse.builder()
                 .referenceId(request.getReferenceId())
-                .importedAt(LocalDateTime.now())
-                .totalItems(request.getItems().size())
+                .importedAt(LocalDateTime.now()) // Thời điểm xử lý xong
+                .warehouseType(request.getWarehouseType())
+                .transactionType(request.getTransactionType())
+                .referenceType(request.getReferenceType())
+                .totalItems(request.getItems() != null ? request.getItems().size() : 0)
                 .status("SUCCESS")
-                .message("Nhập kho thành công!")
+                .message(String.format("Nhập kho thành công phiếu %s vào kho %s",
+                        request.getReferenceId(),
+                        request.getWarehouseType()))
                 .build();
-    }
-
-    private ProductPrice findApplicablePrice(ImportItemRequest item) {
-        if (StringUtils.hasText(item.getCode())) {
-            return priceRepository.findByCode(item.getCode())
-                    .orElseThrow(() -> new BusinessException(ErrorCode.PRICE_NOT_FOUND, "Mã giá " + item.getCode() + " không tồn tại"));
-        }
-        return priceRepository.findByProductCodeAndUnitCodeAndIsDefaultTrue(item.getProductCode(), item.getUnitCode())
-                .orElseThrow(() -> new BusinessException(ErrorCode.DEFAULT_PRICE_NOT_SET, "Sản phẩm " + item.getProductCode() + " chưa có giá mặc định"));
-    }
-    
-
-    private void saveStockTransaction(ImportRequest req, ImportItemRequest item, ProductPrice price) {
-        StockTransaction tx = new StockTransaction();
-        tx.setProductCode(item.getProductCode());
-        tx.setWarehouseType(req.getWarehouseType());
-        tx.setTransactionType(req.getTransactionType());
-        tx.setReferenceType(req.getReferenceType());
-        tx.setQuantity(item.getQuantity());
-        tx.setUnitCode(item.getUnitCode());
-        tx.setLotNumber(item.getLotNumber());
-        tx.setReferenceId(req.getReferenceId());
-        // Note lại thông tin giá tại thời điểm nhập
-        tx.setNote(String.format("PriceCode: %s | Cost: %,.0f", price.getCode(), price.getCostPrice()));
-        stockTransactionRepository.save(tx);
-    }
-
-    private void updateInventoryStock(ImportRequest req, ImportItemRequest item) {
-        Inventory inv = inventoryRepository.findByUniqueStock(
-                item.getProductCode(),
-                req.getWarehouseType(), // Sử dụng WarehouseType chính xác
-                item.getLotNumber(),
-                item.getExpiryDate()
-        ).orElseGet(() -> {
-            Inventory newInv = new Inventory();
-            newInv.setProductCode(item.getProductCode());
-            newInv.setWarehouseType(req.getWarehouseType());
-            newInv.setLotNumber(item.getLotNumber());
-            newInv.setUnitCode(item.getUnitCode());
-            newInv.setExpiryDate(item.getExpiryDate());
-            newInv.setQuantity(BigDecimal.ZERO);
-            return newInv;
-        });
-
-        inv.setQuantity(inv.getQuantity().add(item.getQuantity()));
-        inventoryRepository.save(inv);
     }
 }

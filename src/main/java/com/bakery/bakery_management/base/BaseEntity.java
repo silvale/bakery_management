@@ -28,5 +28,5 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
 
     @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false, length = 255)
-    protected String createdBy;
+    protected String createdBy = "SYSTEM";
 }

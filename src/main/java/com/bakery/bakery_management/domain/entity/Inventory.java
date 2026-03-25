@@ -16,26 +16,16 @@ import java.util.UUID;
 @Table(name = "inventory")
 public class Inventory extends JpaEntityAuditable<UUID> {
 
-    @Column(name = "product_code", nullable = false)
     private String productCode;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "warehouse_type")
-    private WarehouseType warehouseType;
+    private WarehouseType warehouseType; // MAIN_STORAGE, KITCHEN
 
-    @Column(precision = 19, scale = 3)
     private BigDecimal quantity;
-
-    @Column(name = "unit_code")
     private String unitCode;
+    private String lotNumber; // Lưu vết lô nhập gần nhất
+    private LocalDateTime expiryDate; // Ngày hết hạn cụ thể
 
-    @Column(name = "lot_number")
-    private String lotNumber; // Liên kết tới Import Ticket ID
-
-    @Column(name = "expiry_date")
-    private LocalDateTime expiryDate;
-
-    // Helper check hết hạn nhanh cho Hải
     public boolean isExpired() {
         return expiryDate != null && expiryDate.isBefore(LocalDateTime.now());
     }

@@ -6,6 +6,9 @@ import com.bakery.bakery_management.domain.enums.StatusCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Getter
 @Setter
 public class ProductResponse extends BaseResponse {
@@ -16,5 +19,9 @@ public class ProductResponse extends BaseResponse {
     private String unitCode;
     private Integer shelfLifeDays;
     private StatusCode status;
+    private List<ProductPriceResponse> prices;
+    private BigDecimal currentSalesPrice;
+    private BigDecimal currentCostPrice;
+
 
 }
