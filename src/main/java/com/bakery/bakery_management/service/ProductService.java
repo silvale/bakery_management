@@ -2,6 +2,7 @@ package com.bakery.bakery_management.service;
 
 
 import com.bakery.bakery_management.base.AdminOperationService;
+import com.bakery.bakery_management.domain.dto.ReferenceResponse;
 import com.bakery.bakery_management.domain.dto.Request.ProductPriceRequest;
 import com.bakery.bakery_management.domain.dto.Request.ProductRequest;
 import com.bakery.bakery_management.domain.dto.Response.ProductPriceResponse;
@@ -99,19 +100,29 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
                 .filter(Objects::nonNull)
                 .toList();
 
-        Map<String, ProductPriceResponse> priceMap = priceService.getDefaultPriceResponsesByCodes(codes);
+        List<String> unitCodes = entities.stream()
+                .map(Product::getUnitCode)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
 
-        responses.forEach(res -> {
-            ProductPriceResponse priceRes = priceMap.get(res.getCode());
-            if (priceRes != null) {
-                res.setCurrentSalesPrice(priceRes.getSalePrice());
-                res.setCurrentCostPrice(priceRes.getCostPrice());
-            } else {
-                res.setCurrentSalesPrice(BigDecimal.ZERO);
-                res.setCurrentCostPrice(BigDecimal.ZERO);
+        Map<String, ProductPriceResponse> priceMap = priceService.getDefaultPriceResponsesByCodes(codes);
+        Map<String, ReferenceResponse> unitMap = unitService.getMapByCodes(unitCodes);
+
+        for (int i = 0; i < entities.size(); i++) {
+            Product entity = entities.get(i);
+            ProductResponse res = responses.get(i);
+
+            if (entity.getUnitCode() != null && unitMap != null) {
+                res.setUnit(unitMap.get(entity.getUnitCode()));
             }
+
+            ProductPriceResponse priceRes = priceMap.get(entity.getCode());
+            res.setCurrentSalesPrice(priceRes != null ? priceRes.getSalePrice() : BigDecimal.ZERO);
+            res.setCurrentCostPrice(priceRes != null ? priceRes.getCostPrice() : BigDecimal.ZERO);
+
             res.setPrices(null);
-        });
+        }
     }
 
     @Override

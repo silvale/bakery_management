@@ -9,12 +9,14 @@ com/bakery/bakery_management/mapper/UnitMapper.class
 com/bakery/bakery_management/base/AdminBaseResource.class
 com/bakery/bakery_management/config/WebConfig.class
 com/bakery/bakery_management/service/InventoryService.class
+com/bakery/bakery_management/mapper/ProductLookupContext$ProductLookupContextBuilder.class
 com/bakery/bakery_management/exception/ErrorCode.class
 com/bakery/bakery_management/mapper/ProductMapperImpl.class
 com/bakery/bakery_management/service/AdminBaseService.class
 com/bakery/bakery_management/service/ProductService.class
 com/bakery/bakery_management/domain/dto/Response/UnitResponse.class
 com/bakery/bakery_management/base/AdminCrudService.class
+com/bakery/bakery_management/mapper/ProductLookupContext.class
 com/bakery/bakery_management/domain/dto/Response/ExportResponse.class
 com/bakery/bakery_management/controller/UnitResource.class
 com/bakery/bakery_management/repository/InventoryRepository.class
@@ -50,6 +52,7 @@ com/bakery/bakery_management/domain/entity/Warehouse.class
 com/bakery/bakery_management/domain/dto/Request/ImportRequest.class
 com/bakery/bakery_management/domain/dto/Request/ProductPriceRequest$ProductPriceRequestBuilder.class
 com/bakery/bakery_management/domain/dto/Request/UnitRequest$UnitRequestBuilder.class
+com/bakery/bakery_management/domain/dto/ReferenceResponse.class
 com/bakery/bakery_management/mapper/AdminBaseMapper.class
 com/bakery/bakery_management/controller/ProductResource.class
 com/bakery/bakery_management/BakeryManagementApplication.class

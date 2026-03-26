@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-25T17:20:14+0700",
+    date = "2026-03-26T20:48:45+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
 )
 @Component
@@ -157,7 +157,6 @@ public class ProductMapperImpl implements ProductMapper {
         productResponse.setCode( entity.getCode() );
         productResponse.setName( entity.getName() );
         productResponse.setType( entity.getType() );
-        productResponse.setUnitCode( entity.getUnitCode() );
         productResponse.setStatus( entity.getStatus() );
         productResponse.setPrices( productPriceListToProductPriceResponseList( entity.getPrices() ) );
 
@@ -206,6 +205,30 @@ public class ProductMapperImpl implements ProductMapper {
                 entity.setPrices( list );
             }
         }
+    }
+
+    @Override
+    public ProductResponse toResponse(Product entity, ProductLookupContext context) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        ProductResponse productResponse = new ProductResponse();
+
+        productResponse.setId( entity.getId() );
+        productResponse.setCreatedBy( entity.getCreatedBy() );
+        productResponse.setCreatedAt( entity.getCreatedAt() );
+        productResponse.setUpdatedBy( entity.getUpdatedBy() );
+        productResponse.setUpdatedAt( entity.getUpdatedAt() );
+        productResponse.setCode( entity.getCode() );
+        productResponse.setName( entity.getName() );
+        productResponse.setType( entity.getType() );
+        productResponse.setStatus( entity.getStatus() );
+        productResponse.setPrices( productPriceListToProductPriceResponseList1( entity.getPrices(), context ) );
+
+        productResponse.setUnit( context.getUnit(entity.getUnitCode()) );
+
+        return productResponse;
     }
 
     protected ProductPrice productPriceRequestToProductPrice(ProductPriceRequest productPriceRequest) {
@@ -266,6 +289,38 @@ public class ProductMapperImpl implements ProductMapper {
         List<ProductPriceResponse> list1 = new ArrayList<ProductPriceResponse>( list.size() );
         for ( ProductPrice productPrice : list ) {
             list1.add( productPriceToProductPriceResponse( productPrice ) );
+        }
+
+        return list1;
+    }
+
+    protected ProductPriceResponse productPriceToProductPriceResponse1(ProductPrice productPrice, ProductLookupContext context) {
+        if ( productPrice == null ) {
+            return null;
+        }
+
+        ProductPriceResponse.ProductPriceResponseBuilder productPriceResponse = ProductPriceResponse.builder();
+
+        productPriceResponse.code( productPrice.getCode() );
+        productPriceResponse.productCode( productPrice.getProductCode() );
+        productPriceResponse.unitCode( productPrice.getUnitCode() );
+        productPriceResponse.costPrice( productPrice.getCostPrice() );
+        productPriceResponse.salePrice( productPrice.getSalePrice() );
+        productPriceResponse.isDefault( productPrice.getIsDefault() );
+        productPriceResponse.appliedDate( productPrice.getAppliedDate() );
+        productPriceResponse.status( productPrice.getStatus() );
+
+        return productPriceResponse.build();
+    }
+
+    protected List<ProductPriceResponse> productPriceListToProductPriceResponseList1(List<ProductPrice> list, ProductLookupContext context) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<ProductPriceResponse> list1 = new ArrayList<ProductPriceResponse>( list.size() );
+        for ( ProductPrice productPrice : list ) {
+            list1.add( productPriceToProductPriceResponse1( productPrice, context ) );
         }
 
         return list1;
