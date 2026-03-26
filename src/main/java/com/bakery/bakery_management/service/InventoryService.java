@@ -1,11 +1,10 @@
 package com.bakery.bakery_management.service;
 
 
-import com.bakery.bakery_management.domain.dto.Request.ExportItemRequest;
-import com.bakery.bakery_management.domain.dto.Request.ExportRequest;
-import com.bakery.bakery_management.domain.dto.Request.ImportItemRequest;
-import com.bakery.bakery_management.domain.dto.Request.ImportRequest;
+import com.bakery.bakery_management.base.AdminOperationService;
+import com.bakery.bakery_management.domain.dto.Request.*;
 import com.bakery.bakery_management.domain.dto.Response.ImportResponse;
+import com.bakery.bakery_management.domain.dto.Response.InventoryResponse;
 import com.bakery.bakery_management.domain.entity.Inventory;
 import com.bakery.bakery_management.domain.entity.Product;
 import com.bakery.bakery_management.domain.entity.StockTransaction;
@@ -15,10 +14,13 @@ import com.bakery.bakery_management.domain.enums.TransactionType;
 import com.bakery.bakery_management.domain.enums.WarehouseType;
 import com.bakery.bakery_management.exception.BusinessException;
 import com.bakery.bakery_management.exception.ErrorCode;
+import com.bakery.bakery_management.mapper.AdminBaseMapper;
+import com.bakery.bakery_management.mapper.InventoryMapper;
 import com.bakery.bakery_management.repository.InventoryRepository;
 import com.bakery.bakery_management.repository.ProductRepository;
 import com.bakery.bakery_management.repository.StockTransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +28,19 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class InventoryService {
+public class InventoryService extends AdminOperationService<InventoryRequest, InventoryResponse, Inventory> {
 
     private final InventoryRepository inventoryRepository;
+    private final InventoryMapper inventoryMapper;
     private final StockTransactionRepository transactionRepository;
     private final ProductRepository productRepository;
-    private final ProductPriceService priceService; // Service xử lý sync giá
+    private final ProductPriceService priceService;
+
+
 
     // --- NHẬP KHO ---
     @Transactional
@@ -141,10 +147,19 @@ public class InventoryService {
                 .transactionType(request.getTransactionType())
                 .referenceType(request.getReferenceType())
                 .totalItems(request.getItems() != null ? request.getItems().size() : 0)
-                .status("SUCCESS")
                 .message(String.format("Nhập kho thành công phiếu %s vào kho %s",
                         request.getReferenceId(),
                         request.getWarehouseType()))
                 .build();
+    }
+
+    @Override
+    protected JpaRepository<Inventory, UUID> getRepository() {
+        return inventoryRepository;
+    }
+
+    @Override
+    protected AdminBaseMapper<InventoryRequest, InventoryResponse, Inventory> getMapper() {
+        return inventoryMapper;
     }
 }

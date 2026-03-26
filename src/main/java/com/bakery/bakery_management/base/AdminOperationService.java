@@ -22,33 +22,26 @@ public abstract class AdminOperationService<REQ, RES, E extends JpaEntity<UUID>>
     @Override
     protected abstract AdminBaseMapper<REQ, RES, E> getMapper();
 
-    // --- CÁC HOOKS ĐỂ HANDLE LOGIC ---
-
-    // Trước và sau khi TẠO MỚI
     protected void beforeCreate(REQ request, E entity) {
     }
 
     protected void afterCreate(REQ request, E entity) {
     }
 
-    // Trước và sau khi CẬP NHẬT
     protected void beforeUpdate(REQ request, E entity, E oldEntity) {
     }
 
     protected void afterUpdate(REQ request, E entity) {
     }
 
-    // Trước và sau khi XÓA
     protected void beforeDelete(UUID id, E entity) {
     }
 
     protected void afterDelete(UUID id) {
     }
 
-    protected void afterGetListProduct(List<E> entities, List<RES> responses) {
+    protected void afterGetList(List<E> entities, List<RES> responses) {
     }
-
-    ;
 
     protected void afterDetail(E entity, RES response) {
     }
@@ -99,16 +92,13 @@ public abstract class AdminOperationService<REQ, RES, E extends JpaEntity<UUID>>
     @Override
     @Transactional(readOnly = true)
     public PageResult<RES> getList(Pageable pageable) {
-        // Bước A: Lấy dữ liệu phân trang từ DB
         Page<E> entityPage = getRepository().findAll(pageable);
 
-        // Bước B: Chuyển đổi sang List Response (Dùng toResponse của Hải)
         List<RES> responseList = entityPage.getContent().stream()
                 .map(getMapper()::toResponse)
                 .collect(Collectors.toList());
 
-        // Bước C: GỌI HOOK TẠI ĐÂY - Đây là nơi Hải xử lý Batch Load (như load giá)
-        afterGetListProduct(entityPage.getContent(), responseList);
+        afterGetList(entityPage.getContent(), responseList);
 
         return PageResult.ofPage(new PageImpl<>(responseList, pageable, entityPage.getTotalElements()));
 

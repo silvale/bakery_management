@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImportResponse extends BaseResponse {
+public class InventoryResponse extends BaseResponse {
     private String referenceId;
     private LocalDateTime importedAt;
     private WarehouseType warehouseType;

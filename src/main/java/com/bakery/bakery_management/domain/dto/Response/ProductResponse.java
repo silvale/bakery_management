@@ -2,12 +2,14 @@ package com.bakery.bakery_management.domain.dto.Response;
 
 import com.bakery.bakery_management.domain.dto.BaseResponse;
 import com.bakery.bakery_management.domain.dto.ReferenceResponse;
+import com.bakery.bakery_management.domain.enums.ExpiryInputType;
 import com.bakery.bakery_management.domain.enums.ProductType;
 import com.bakery.bakery_management.domain.enums.StatusCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -22,6 +24,11 @@ public class ProductResponse extends BaseResponse {
     private List<ProductPriceResponse> prices;
     private BigDecimal currentSalesPrice;
     private BigDecimal currentCostPrice;
+    private ExpiryInputType expiryType;
+
+    private Integer defaultExpiryDays;
+
+    private LocalDate fixedExpiryDate;
 
 
 }

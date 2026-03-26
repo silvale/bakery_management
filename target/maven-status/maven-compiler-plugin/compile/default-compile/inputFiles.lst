@@ -26,6 +26,7 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/BaseEntity.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/enums/WarehouseType.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/ProductMapper.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Request/InventoryRequest.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Request/UnitRequest.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/ExpiringProductResponse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/GenerateBakeryId.java
@@ -56,6 +57,7 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/service/ProductPriceService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/entity/Warehouse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/controller/UnitResource.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/InventoryResponse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/enums/ExpiryInputType.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/service/UnitService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/AdminEntitySupportService.java
@@ -66,5 +68,6 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/enums/PriceType.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/JpaEntity.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/repository/UnitRepository.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/InventoryMapper.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/service/ProductService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse.java

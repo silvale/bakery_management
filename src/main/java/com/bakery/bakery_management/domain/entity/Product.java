@@ -20,18 +20,20 @@ import java.util.UUID;
 @Setter
 public class Product extends JpaEntityAuditable<UUID> {
 
-    private String code; // Business Key
+    private String code;
     private String name;
     private String unitCode;
 
     @Enumerated(EnumType.STRING)
-    private ProductType type; // RAW_MATERIAL, SEMI_FINISHED, FINISHED_PRODUCT
+    private ProductType type;
 
     @Enumerated(EnumType.STRING)
-    private ExpiryInputType expiryType; // NONE, NUMBER, DATE, TODAY
+    private ExpiryInputType expiryType;
 
-    private Integer defaultExpiryDays; // Dùng cho loại NUMBER
-    private LocalDate fixedExpiryDate; // Dùng cho loại DATE (Hạn cố định)
+    @Column(name = "default_expiry_days")
+    private Integer defaultExpiryDays;
+
+    private LocalDate fixedExpiryDate;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @OrderBy("appliedDate DESC")

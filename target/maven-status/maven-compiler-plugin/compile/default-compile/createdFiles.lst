@@ -11,6 +11,7 @@ com/bakery/bakery_management/config/WebConfig.class
 com/bakery/bakery_management/service/InventoryService.class
 com/bakery/bakery_management/mapper/ProductLookupContext$ProductLookupContextBuilder.class
 com/bakery/bakery_management/exception/ErrorCode.class
+com/bakery/bakery_management/domain/dto/Response/InventoryResponse.class
 com/bakery/bakery_management/mapper/ProductMapperImpl.class
 com/bakery/bakery_management/service/AdminBaseService.class
 com/bakery/bakery_management/service/ProductService.class
@@ -29,11 +30,13 @@ com/bakery/bakery_management/domain/entity/Branch.class
 com/bakery/bakery_management/domain/enums/BatchStatus.class
 com/bakery/bakery_management/domain/entity/ProductPrice.class
 com/bakery/bakery_management/domain/entity/Unit.class
+com/bakery/bakery_management/mapper/InventoryMapperImpl.class
 com/bakery/bakery_management/domain/dto/Request/ProductRequest$ProductRequestBuilder.class
 com/bakery/bakery_management/base/AdminOperationService.class
 com/bakery/bakery_management/exception/GlobalExceptionHandler.class
 com/bakery/bakery_management/mapper/CommonMapperImpl.class
 com/bakery/bakery_management/domain/dto/Response/ExpiringProductResponse.class
+com/bakery/bakery_management/domain/dto/Request/InventoryRequest.class
 com/bakery/bakery_management/domain/PageResult$PageResultBuilder.class
 com/bakery/bakery_management/domain/enums/WarehouseType.class
 com/bakery/bakery_management/domain/PageResult$PageMeta.class
@@ -64,11 +67,13 @@ com/bakery/bakery_management/base/AdminEntitySupportService.class
 com/bakery/bakery_management/mapper/ProductPriceMapper.class
 com/bakery/bakery_management/domain/entity/StockTransaction.class
 com/bakery/bakery_management/domain/enums/PriceType.class
+com/bakery/bakery_management/mapper/InventoryMapper.class
 com/bakery/bakery_management/domain/PageResult$PageMeta$PageMetaBuilder.class
 com/bakery/bakery_management/domain/enums/ReferenceType.class
 com/bakery/bakery_management/repository/ProductPriceRepository.class
 com/bakery/bakery_management/domain/dto/BaseResponse.class
 com/bakery/bakery_management/repository/ProductRepository.class
+com/bakery/bakery_management/domain/dto/Response/InventoryResponse$InventoryResponseBuilder.class
 com/bakery/bakery_management/domain/enums/TransactionType.class
 com/bakery/bakery_management/base/OperatorResult.class
 com/bakery/bakery_management/service/UnitService.class

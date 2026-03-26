@@ -68,21 +68,24 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
         }
         ExpiryInputType expiryType = request.getExpiryType();
         if (ExpiryInputType.TODAY.equals(expiryType)) {
-            Integer expiryNumber = request.getExpiryNumber();
+            Integer expiryNumber = request.getDefaultExpiryDays();
             if (expiryNumber == null || expiryNumber <= 0) {
                 throw new BusinessException(ErrorCode.INVALID_INPUT, "Ngày hết hạn không hợp lệ " + expiryNumber);
             }
         } else if (ExpiryInputType.NONE.equals(expiryType)) {
-            request.setExpiryNumber(null);
+            request.setDefaultExpiryDays(null);
         }
     }
 
     @Override
     protected void afterCreate(ProductRequest request, Product entity) {
         List<ProductPriceRequest> prices = request.getPrices();
-        for (ProductPriceRequest price : prices) {
-            priceService.syncPrice(request.getCode(), request.getUnitCode(), price.getCostPrice(), price.getSalePrice(), request.getType());
+        if (prices != null && !prices.isEmpty()) {
+            for (ProductPriceRequest price : prices) {
+                priceService.syncPrice(request.getCode(), request.getUnitCode(), price.getCostPrice(), price.getSalePrice(), request.getType());
+            }
         }
+
     }
 
     @Override
@@ -94,7 +97,7 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     }
 
     @Override
-    protected void afterGetListProduct(List<Product> entities, List<ProductResponse> responses) {
+    protected void afterGetList(List<Product> entities, List<ProductResponse> responses) {
         List<String> codes = entities.stream()
                 .map(Product::getCode)
                 .filter(Objects::nonNull)

@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -24,7 +25,10 @@ public class ProductRequest {
     private String unitCode;
     private StatusCode status;
     private ExpiryInputType expiryType;
-    private Integer expiryNumber;
+
+    private Integer defaultExpiryDays;
+
+    private LocalDate fixedExpiryDate;
 
     List<ProductPriceRequest> prices;
 }

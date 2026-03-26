@@ -1,6 +1,7 @@
 package com.bakery.bakery_management.domain.dto;
 
 
+import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Generated;
@@ -35,6 +36,8 @@ public abstract class BaseResponse implements Serializable {
             access = JsonProperty.Access.READ_ONLY
     )
     protected Instant updatedAt;
+
+    protected StatusCode status;
 
     @Generated
     public UUID getId() {
@@ -84,5 +87,15 @@ public abstract class BaseResponse implements Serializable {
     @Generated
     public void setUpdatedAt(final Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Generated
+    public StatusCode getStatus() {
+        return status;
+    }
+
+    @Generated
+    public void setStatus(StatusCode status) {
+        this.status = status;
     }
 }
