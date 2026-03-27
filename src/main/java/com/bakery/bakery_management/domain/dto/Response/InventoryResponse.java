@@ -1,6 +1,7 @@
 package com.bakery.bakery_management.domain.dto.Response;
 
 import com.bakery.bakery_management.domain.dto.BaseResponse;
+import com.bakery.bakery_management.domain.dto.ReferenceResponse;
 import com.bakery.bakery_management.domain.enums.ReferenceType;
 import com.bakery.bakery_management.domain.enums.TransactionType;
 import com.bakery.bakery_management.domain.enums.WarehouseType;
@@ -18,7 +19,7 @@ public class InventoryResponse extends BaseResponse {
     private String productCode;
     private WarehouseType warehouseType;
     private BigDecimal quantity;
-    private String unitCode;
+    private ReferenceResponse unit;
     private String lotNumber;
     private LocalDateTime expiryDate;
 }

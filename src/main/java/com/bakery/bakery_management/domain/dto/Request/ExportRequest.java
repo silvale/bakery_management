@@ -28,6 +28,5 @@ public class ExportRequest {
     private String note;
 
     @NotEmpty
-    @Valid
     private List<ExportItemRequest> items;
 }

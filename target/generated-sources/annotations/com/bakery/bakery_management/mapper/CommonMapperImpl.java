@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-27T21:33:27+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
+    date = "2026-03-28T00:56:11+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
 public class CommonMapperImpl implements CommonMapper {

@@ -3,7 +3,9 @@ package com.bakery.bakery_management.service;
 
 import com.bakery.bakery_management.base.AdminOperationService;
 import com.bakery.bakery_management.domain.PageResult;
+import com.bakery.bakery_management.domain.dto.ReferenceResponse;
 import com.bakery.bakery_management.domain.dto.Request.*;
+import com.bakery.bakery_management.domain.dto.Response.ExportResponse;
 import com.bakery.bakery_management.domain.dto.Response.ImportResponse;
 import com.bakery.bakery_management.domain.dto.Response.InventoryResponse;
 import com.bakery.bakery_management.domain.entity.Inventory;
@@ -32,6 +34,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,6 +48,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     private final StockTransactionRepository transactionRepository;
     private final ProductRepository productRepository;
     private final ProductPriceService priceService;
+    private final UnitService unitService;
 
 
     // --- NHẬP KHO ---
@@ -74,7 +79,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
 
     // --- XUẤT KHO (FEFO) ---
     @Transactional
-    public void processExport(ExportRequest request) {
+    public ExportResponse processExport(ExportRequest request) {
         for (ExportItemRequest item : request.getItems()) {
             Product product = productRepository.findByCode(item.getProductCode())
                     .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
@@ -104,6 +109,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                 throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK, "Thiếu hàng cho mã: " + product.getCode());
             }
         }
+        return buildExportResponse(request);
     }
 
     private LocalDateTime calculateExpiry(Product p, ImportItemRequest item) {
@@ -157,15 +163,45 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                 .build();
     }
 
-    public PageResult<InventoryResponse> getListInventoryByType(Pageable pageable, String warehoueType) {
-        Page<Inventory> all = inventoryRepository.findAll(pageable);
+    private ExportResponse buildExportResponse(ExportRequest request) {
+        return ExportResponse.builder()
+                .referenceId(request.getReferenceId())
+                .importedAt(LocalDateTime.now()) // Thời điểm xử lý xong
+                .warehouseType(request.getWarehouseType())
+                .transactionType(request.getTransactionType())
+                .referenceType(request.getReferenceType())
+                .totalItems(request.getItems() != null ? request.getItems().size() : 0)
+                .message(String.format("Nhập kho thành công phiếu %s vào kho %s",
+                        request.getReferenceId(),
+                        request.getWarehouseType()))
+                .build();
+    }
 
-        List<InventoryResponse> responseList = all.getContent().stream()
+    public PageResult<InventoryResponse> getListInventoryByType(Pageable pageable, String warehoueType) {
+        Page<Inventory> entities = inventoryRepository.findAll(pageable);
+
+        List<InventoryResponse> responseList = entities.getContent().stream()
                 .filter(i -> i.getWarehouseType() == WarehouseType.valueOf(warehoueType))
                 .map(getMapper()::toResponse)
                 .collect(Collectors.toList());
 
-        return PageResult.ofPage(new PageImpl<>(responseList, pageable, all.getTotalElements()));
+        List<String> unitCodes = entities.stream()
+                .map(Inventory::getUnitCode)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        Map<String, ReferenceResponse> unitMap = unitService.getMapByCodes(unitCodes);
+        for (int i = 0; i < entities.getContent().size(); i++) {
+            Inventory entity = entities.getContent().get(i);
+            InventoryResponse res = responseList.get(i);
+
+            if (entity.getUnitCode() != null && unitMap != null) {
+                res.setUnit(unitMap.get(entity.getUnitCode()));
+            }
+        }
+
+        return PageResult.ofPage(new PageImpl<>(responseList, pageable, entities.getTotalElements()));
     }
 
     @Override
@@ -176,5 +212,24 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     @Override
     protected AdminBaseMapper<InventoryRequest, InventoryResponse, Inventory> getMapper() {
         return inventoryMapper;
+    }
+
+    @Override
+    protected void afterGetList(List<Inventory> entities, List<InventoryResponse> responses) {
+        List<String> unitCodes = entities.stream()
+                .map(Inventory::getUnitCode)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        Map<String, ReferenceResponse> unitMap = unitService.getMapByCodes(unitCodes);
+        for (int i = 0; i < entities.size(); i++) {
+            Inventory entity = entities.get(i);
+            InventoryResponse res = responses.get(i);
+
+            if (entity.getUnitCode() != null && unitMap != null) {
+                res.setUnit(unitMap.get(entity.getUnitCode()));
+            }
+        }
     }
 }

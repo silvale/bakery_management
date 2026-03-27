@@ -3,8 +3,10 @@ package com.bakery.bakery_management.controller;
 import com.bakery.bakery_management.base.AdminBaseResource;
 import com.bakery.bakery_management.base.AdminOperationService;
 import com.bakery.bakery_management.domain.PageResult;
+import com.bakery.bakery_management.domain.dto.Request.ExportRequest;
 import com.bakery.bakery_management.domain.dto.Request.ImportRequest;
 import com.bakery.bakery_management.domain.dto.Request.InventoryRequest;
+import com.bakery.bakery_management.domain.dto.Response.ExportResponse;
 import com.bakery.bakery_management.domain.dto.Response.ImportResponse;
 import com.bakery.bakery_management.domain.dto.Response.InventoryResponse;
 import com.bakery.bakery_management.domain.entity.Inventory;
@@ -26,6 +28,11 @@ public class InventoryController extends AdminBaseResource<InventoryRequest, Inv
     @PostMapping("/import")
     public ResponseEntity<ImportResponse> internalImport(@RequestBody @Valid ImportRequest request) {
         return ResponseEntity.ok(inventoryService.processImport(request));
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<ExportResponse> internalExport(@RequestBody @Valid ExportRequest exportRequest) {
+        return ResponseEntity.ok(inventoryService.processExport(exportRequest));
     }
 
     @GetMapping("/warehouse/{warehouse}")
