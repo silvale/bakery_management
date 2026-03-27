@@ -5,64 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="88874637-65e0-4a96-84aa-c9030d19f652" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/controller/ProductPriceResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Request/ImportItemRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Request/ProductPriceRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/Inventory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/ProductPriceMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/repository/InventoryRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/repository/ProductPriceRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/ProductPriceService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/base/AdminBaseResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/base/AdminBaseResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/controller/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/controller/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/controller/InventoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Request/ImportRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Request/ImportRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Response/ImportResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Response/ImportResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/InventoryBatch.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/ProductPrice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/ProductPrice.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/ProductionMaterial.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/ProductionOrder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/ProductionResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/Recipe.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/RecipeIngredient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/StockTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/entity/StockTransaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/enums/StatusCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/enums/StatusCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/enums/WarehouseType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/enums/WarehouseType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/exception/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/exception/ErrorCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/repository/InventoryBatchRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/repository/ProductRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/repository/StockTransactionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/repository/StockTransactionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/InventoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/base/AdminBaseResource.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/base/AdminBaseResource.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/controller/GlobalExceptionHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/controller/InventoryController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/controller/InventoryController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Request/ImportRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Request/ImportRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/ImportResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/ImportResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/InventoryBatch.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/Product.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/Product.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/ProductPrice.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/ProductPrice.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/ProductionMaterial.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/ProductionOrder.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/ProductionResult.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/Recipe.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/RecipeIngredient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/StockTransaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/entity/StockTransaction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/enums/StatusCode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/enums/StatusCode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/enums/WarehouseType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/enums/WarehouseType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/exception/ErrorCode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/exception/ErrorCode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Response/InventoryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Response/InventoryResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/AdminBaseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/AdminBaseMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/InventoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/InventoryMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/ProductMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/ProductPriceMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/mapper/ProductPriceMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse$ProductPriceResponseBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/mapper/AdminBaseMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/mapper/AdminBaseMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/mapper/ProductMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/mapper/ProductMapper.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/mapper/ProductMapperImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/mapper/ProductMapperImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/repository/InventoryBatchRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/repository/ProductRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/repository/ProductRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/service/InventoryService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/service/InventoryService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/mapper/ProductPriceMapperImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/mapper/ProductPriceMapperImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/CommonMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/CommonMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductMapperImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductPriceMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductPriceMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.bakery.bakery_management.BakeryManagementApplicationTests.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.bakery.bakery_management.BakeryManagementApplicationTests.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,17 +61,20 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Volumes/Data/bakery_management&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.intentionPowerPack&quot;
+    &quot;last_opened_file_path&quot;: &quot;/Volumes/Data/bakery_management/src/main/resources/db&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.completion&quot;
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/db" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.bakery.bakery_management.controller" />
       <recent name="com.bakery.bakery_management.mapper" />
-      <recent name="com.bakery.bakery_management.repository" />
-      <recent name="com.bakery.bakery_management.domain.entity" />
-      <recent name="com.bakery.bakery_management.service" />
+      <recent name="com.bakery.bakery_management.domain.dto.Request" />
+      <recent name="com.bakery.bakery_management.domain.dto.Response" />
+      <recent name="com.bakery.bakery_management.domain.dto" />
+      <recent name="com.bakery.bakery_management.controller" />
     </key>
   </component>
   <component name="RunManager">
@@ -142,5 +106,12 @@
       <updated>1774269897329</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="org.springframework.data.domain.Sort" memberName="orders" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

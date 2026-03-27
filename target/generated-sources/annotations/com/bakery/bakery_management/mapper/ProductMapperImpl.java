@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-26T22:27:34+0700",
+    date = "2026-03-27T16:08:40+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
 )
 @Component
@@ -285,18 +285,23 @@ public class ProductMapperImpl implements ProductMapper {
             return null;
         }
 
-        ProductPriceResponse.ProductPriceResponseBuilder productPriceResponse = ProductPriceResponse.builder();
+        ProductPriceResponse productPriceResponse = new ProductPriceResponse();
 
-        productPriceResponse.code( productPrice.getCode() );
-        productPriceResponse.productCode( productPrice.getProductCode() );
-        productPriceResponse.unitCode( productPrice.getUnitCode() );
-        productPriceResponse.costPrice( productPrice.getCostPrice() );
-        productPriceResponse.salePrice( productPrice.getSalePrice() );
-        productPriceResponse.isDefault( productPrice.getIsDefault() );
-        productPriceResponse.appliedDate( productPrice.getAppliedDate() );
-        productPriceResponse.status( productPrice.getStatus() );
+        productPriceResponse.setId( productPrice.getId() );
+        productPriceResponse.setCreatedBy( productPrice.getCreatedBy() );
+        productPriceResponse.setCreatedAt( productPrice.getCreatedAt() );
+        productPriceResponse.setUpdatedBy( productPrice.getUpdatedBy() );
+        productPriceResponse.setUpdatedAt( productPrice.getUpdatedAt() );
+        productPriceResponse.setCode( productPrice.getCode() );
+        productPriceResponse.setProductCode( productPrice.getProductCode() );
+        productPriceResponse.setUnitCode( productPrice.getUnitCode() );
+        productPriceResponse.setCostPrice( productPrice.getCostPrice() );
+        productPriceResponse.setSalePrice( productPrice.getSalePrice() );
+        productPriceResponse.setIsDefault( productPrice.getIsDefault() );
+        productPriceResponse.setAppliedDate( productPrice.getAppliedDate() );
+        productPriceResponse.setStatus( productPrice.getStatus() );
 
-        return productPriceResponse.build();
+        return productPriceResponse;
     }
 
     protected List<ProductPriceResponse> productPriceListToProductPriceResponseList(List<ProductPrice> list) {
@@ -317,18 +322,23 @@ public class ProductMapperImpl implements ProductMapper {
             return null;
         }
 
-        ProductPriceResponse.ProductPriceResponseBuilder productPriceResponse = ProductPriceResponse.builder();
+        ProductPriceResponse productPriceResponse = new ProductPriceResponse();
 
-        productPriceResponse.code( productPrice.getCode() );
-        productPriceResponse.productCode( productPrice.getProductCode() );
-        productPriceResponse.unitCode( productPrice.getUnitCode() );
-        productPriceResponse.costPrice( productPrice.getCostPrice() );
-        productPriceResponse.salePrice( productPrice.getSalePrice() );
-        productPriceResponse.isDefault( productPrice.getIsDefault() );
-        productPriceResponse.appliedDate( productPrice.getAppliedDate() );
-        productPriceResponse.status( productPrice.getStatus() );
+        productPriceResponse.setId( productPrice.getId() );
+        productPriceResponse.setCreatedBy( productPrice.getCreatedBy() );
+        productPriceResponse.setCreatedAt( productPrice.getCreatedAt() );
+        productPriceResponse.setUpdatedBy( productPrice.getUpdatedBy() );
+        productPriceResponse.setUpdatedAt( productPrice.getUpdatedAt() );
+        productPriceResponse.setCode( productPrice.getCode() );
+        productPriceResponse.setProductCode( productPrice.getProductCode() );
+        productPriceResponse.setUnitCode( productPrice.getUnitCode() );
+        productPriceResponse.setCostPrice( productPrice.getCostPrice() );
+        productPriceResponse.setSalePrice( productPrice.getSalePrice() );
+        productPriceResponse.setIsDefault( productPrice.getIsDefault() );
+        productPriceResponse.setAppliedDate( productPrice.getAppliedDate() );
+        productPriceResponse.setStatus( productPrice.getStatus() );
 
-        return productPriceResponse.build();
+        return productPriceResponse;
     }
 
     protected List<ProductPriceResponse> productPriceListToProductPriceResponseList1(List<ProductPrice> list, ProductLookupContext context) {

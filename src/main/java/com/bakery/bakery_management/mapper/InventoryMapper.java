@@ -10,4 +10,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(config = CentralMapperConfig.class, componentModel = SPRING)
 public interface InventoryMapper extends AdminBaseMapper<InventoryRequest, InventoryResponse, Inventory> {
+
+    InventoryResponse toResponse(Inventory entity);
 }

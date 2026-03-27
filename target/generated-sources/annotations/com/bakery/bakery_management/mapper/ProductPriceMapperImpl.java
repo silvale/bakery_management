@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-26T22:27:34+0700",
+    date = "2026-03-27T16:08:41+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
 )
 @Component
@@ -144,17 +144,22 @@ public class ProductPriceMapperImpl implements ProductPriceMapper {
             return null;
         }
 
-        ProductPriceResponse.ProductPriceResponseBuilder productPriceResponse = ProductPriceResponse.builder();
+        ProductPriceResponse productPriceResponse = new ProductPriceResponse();
 
-        productPriceResponse.isDefault( entity.getIsDefault() );
-        productPriceResponse.code( entity.getCode() );
-        productPriceResponse.productCode( entity.getProductCode() );
-        productPriceResponse.unitCode( entity.getUnitCode() );
-        productPriceResponse.costPrice( entity.getCostPrice() );
-        productPriceResponse.salePrice( entity.getSalePrice() );
-        productPriceResponse.appliedDate( entity.getAppliedDate() );
-        productPriceResponse.status( entity.getStatus() );
+        productPriceResponse.setIsDefault( entity.getIsDefault() );
+        productPriceResponse.setId( entity.getId() );
+        productPriceResponse.setCreatedBy( entity.getCreatedBy() );
+        productPriceResponse.setCreatedAt( entity.getCreatedAt() );
+        productPriceResponse.setUpdatedBy( entity.getUpdatedBy() );
+        productPriceResponse.setUpdatedAt( entity.getUpdatedAt() );
+        productPriceResponse.setCode( entity.getCode() );
+        productPriceResponse.setProductCode( entity.getProductCode() );
+        productPriceResponse.setUnitCode( entity.getUnitCode() );
+        productPriceResponse.setCostPrice( entity.getCostPrice() );
+        productPriceResponse.setSalePrice( entity.getSalePrice() );
+        productPriceResponse.setAppliedDate( entity.getAppliedDate() );
+        productPriceResponse.setStatus( entity.getStatus() );
 
-        return productPriceResponse.build();
+        return productPriceResponse;
     }
 }

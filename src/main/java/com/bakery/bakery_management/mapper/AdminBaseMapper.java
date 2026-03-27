@@ -25,6 +25,7 @@ public interface AdminBaseMapper<D, R, E> {
 
     E snapshot(E entity);
 
+    @BeanMapping(qualifiedBy = ToEntity.class)
     R toResponse(E entity);
 
     Collection<R> toResponse(Collection<E> entity);

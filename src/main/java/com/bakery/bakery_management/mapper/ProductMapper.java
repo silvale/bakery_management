@@ -19,7 +19,6 @@ public interface ProductMapper extends AdminBaseMapper<ProductRequest, ProductRe
     @Mapping(target = "unit", expression = "java(context.getUnit(entity.getUnitCode()))")
     ProductResponse toResponse(Product entity, @Context ProductLookupContext context);
 
-    // Map cho danh sách
     default List<ProductResponse> toResponseList(List<Product> entities, @Context ProductLookupContext context) {
         return entities.stream()
                 .map(entity -> toResponse(entity, context))

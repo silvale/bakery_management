@@ -11,6 +11,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(config = CentralMapperConfig.class, componentModel = SPRING)
 public interface ProductPriceMapper extends AdminBaseMapper<ProductPriceRequest, ProductPriceResponse, ProductPrice> {
-    @Mapping(source = "isDefault", target = "isDefault")      // Cẩn thận với kiểu boolean (is/get)
+
+    @Mapping(source = "isDefault", target = "isDefault")
     ProductPriceResponse toResponse(ProductPrice entity);
 }

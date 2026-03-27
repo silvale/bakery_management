@@ -73,7 +73,6 @@ com/bakery/bakery_management/domain/enums/ReferenceType.class
 com/bakery/bakery_management/repository/ProductPriceRepository.class
 com/bakery/bakery_management/domain/dto/BaseResponse.class
 com/bakery/bakery_management/repository/ProductRepository.class
-com/bakery/bakery_management/domain/dto/Response/InventoryResponse$InventoryResponseBuilder.class
 com/bakery/bakery_management/domain/enums/TransactionType.class
 com/bakery/bakery_management/base/OperatorResult.class
 com/bakery/bakery_management/service/UnitService.class
@@ -87,5 +86,4 @@ com/bakery/bakery_management/service/ProductPriceService.class
 com/bakery/bakery_management/domain/dto/Request/ProductRequest.class
 com/bakery/bakery_management/repository/StockTransactionRepository.class
 com/bakery/bakery_management/mapper/CentralMapperConfig.class
-com/bakery/bakery_management/domain/dto/Response/ProductPriceResponse$ProductPriceResponseBuilder.class
 com/bakery/bakery_management/domain/dto/Request/ExportRequest.class
