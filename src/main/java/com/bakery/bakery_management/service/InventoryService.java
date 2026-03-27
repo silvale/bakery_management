@@ -2,6 +2,7 @@ package com.bakery.bakery_management.service;
 
 
 import com.bakery.bakery_management.base.AdminOperationService;
+import com.bakery.bakery_management.domain.PageResult;
 import com.bakery.bakery_management.domain.dto.Request.*;
 import com.bakery.bakery_management.domain.dto.Response.ImportResponse;
 import com.bakery.bakery_management.domain.dto.Response.InventoryResponse;
@@ -20,6 +21,9 @@ import com.bakery.bakery_management.repository.InventoryRepository;
 import com.bakery.bakery_management.repository.ProductRepository;
 import com.bakery.bakery_management.repository.StockTransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +44,6 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     private final StockTransactionRepository transactionRepository;
     private final ProductRepository productRepository;
     private final ProductPriceService priceService;
-
 
 
     // --- NHẬP KHO ---
@@ -151,6 +155,17 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                         request.getReferenceId(),
                         request.getWarehouseType()))
                 .build();
+    }
+
+    public PageResult<InventoryResponse> getListInventoryByType(Pageable pageable, String warehoueType) {
+        Page<Inventory> all = inventoryRepository.findAll(pageable);
+
+        List<InventoryResponse> responseList = all.getContent().stream()
+                .filter(i -> i.getWarehouseType() == WarehouseType.valueOf(warehoueType))
+                .map(getMapper()::toResponse)
+                .collect(Collectors.toList());
+
+        return PageResult.ofPage(new PageImpl<>(responseList, pageable, all.getTotalElements()));
     }
 
     @Override

@@ -31,4 +31,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
         ORDER BY i.expiryDate ASC NULLS LAST
     """)
     List<Inventory> findAllForExport(String code, WarehouseType warehouseType);
+
+
+    List<Inventory> findByWarehouseType(WarehouseType warehouseType);
 }
