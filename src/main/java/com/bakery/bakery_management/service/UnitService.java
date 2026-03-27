@@ -47,6 +47,16 @@ public class UnitService extends AdminOperationService<UnitRequest, UnitResponse
         return repository.existsByCode(code);
     }
 
+    public ReferenceResponse getByCode(String code) {
+        ReferenceResponse unitRes = new ReferenceResponse();
+        Unit unit = repository.findByCode(code).orElse(null);
+        if (unit != null) {
+            unitRes.setCode(unit.getCode());
+            unitRes.setName(unit.getName());
+        }
+        return unitRes;
+    }
+
     public Map<String, ReferenceResponse> getMapByCodes(List<String> codes) {
         if (CollectionUtils.isEmpty(codes)) {
             return Collections.emptyMap();

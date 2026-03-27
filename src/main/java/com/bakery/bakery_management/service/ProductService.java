@@ -132,9 +132,9 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     protected void afterDetail(Product entity, ProductResponse response) {
         List<ProductPrice> allPrices = priceRepository
                 .findByProductCodeAndStatusOrderByAppliedDateDesc(entity.getCode(), StatusCode.ACTIVE);
-
         List<ProductPriceResponse> priceResponses = priceMapper.toResponse(allPrices).stream().toList();
-
+        ReferenceResponse unitRef = unitService.getByCode(entity.getUnitCode());
+        response.setUnit(unitRef);
         response.setPrices(priceResponses);
 
         priceResponses.stream()
