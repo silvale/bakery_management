@@ -1,3 +1,4 @@
+com/bakery/bakery_management/mapper/StockTransactionMapper.class
 com/bakery/bakery_management/controller/InventoryController.class
 com/bakery/bakery_management/domain/entity/Product.class
 com/bakery/bakery_management/mapper/UnitMapperImpl.class
@@ -18,6 +19,7 @@ com/bakery/bakery_management/service/ProductService.class
 com/bakery/bakery_management/domain/dto/Response/UnitResponse.class
 com/bakery/bakery_management/base/AdminCrudService.class
 com/bakery/bakery_management/mapper/ProductLookupContext.class
+com/bakery/bakery_management/domain/dto/Request/StockTransactionRequest.class
 com/bakery/bakery_management/domain/dto/Response/ExportResponse.class
 com/bakery/bakery_management/controller/UnitResource.class
 com/bakery/bakery_management/repository/InventoryRepository.class
@@ -57,6 +59,7 @@ com/bakery/bakery_management/domain/dto/Request/ProductPriceRequest$ProductPrice
 com/bakery/bakery_management/domain/dto/Request/UnitRequest$UnitRequestBuilder.class
 com/bakery/bakery_management/domain/dto/ReferenceResponse.class
 com/bakery/bakery_management/mapper/AdminBaseMapper.class
+com/bakery/bakery_management/domain/dto/Response/StockTransactionResponse.class
 com/bakery/bakery_management/controller/ProductResource.class
 com/bakery/bakery_management/BakeryManagementApplication.class
 com/bakery/bakery_management/mapper/ProductPriceMapperImpl.class
@@ -81,6 +84,7 @@ com/bakery/bakery_management/domain/PageResult.class
 com/bakery/bakery_management/base/GenerateBakeryId.class
 com/bakery/bakery_management/domain/enums/ProductType.class
 com/bakery/bakery_management/base/JpaEntity.class
+com/bakery/bakery_management/mapper/StockTransactionMapperImpl.class
 com/bakery/bakery_management/controller/ProductPriceResource.class
 com/bakery/bakery_management/service/ProductPriceService.class
 com/bakery/bakery_management/domain/dto/Request/ProductRequest.class

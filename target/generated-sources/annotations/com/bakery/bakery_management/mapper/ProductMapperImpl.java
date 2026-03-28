@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-28T00:56:11+0700",
+    date = "2026-03-28T16:41:58+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
@@ -222,33 +222,6 @@ public class ProductMapperImpl implements ProductMapper {
         }
     }
 
-    @Override
-    public ProductResponse toResponse(Product entity, ProductLookupContext context) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        ProductResponse productResponse = new ProductResponse();
-
-        productResponse.setId( entity.getId() );
-        productResponse.setCreatedBy( entity.getCreatedBy() );
-        productResponse.setCreatedAt( entity.getCreatedAt() );
-        productResponse.setUpdatedBy( entity.getUpdatedBy() );
-        productResponse.setUpdatedAt( entity.getUpdatedAt() );
-        productResponse.setCode( entity.getCode() );
-        productResponse.setName( entity.getName() );
-        productResponse.setType( entity.getType() );
-        productResponse.setStatus( entity.getStatus() );
-        productResponse.setPrices( productPriceListToProductPriceResponseList1( entity.getPrices(), context ) );
-        productResponse.setExpiryType( entity.getExpiryType() );
-        productResponse.setDefaultExpiryDays( entity.getDefaultExpiryDays() );
-        productResponse.setFixedExpiryDate( entity.getFixedExpiryDate() );
-
-        productResponse.setUnit( context.getUnit(entity.getUnitCode()) );
-
-        return productResponse;
-    }
-
     protected ProductPrice productPriceRequestToProductPrice(ProductPriceRequest productPriceRequest) {
         if ( productPriceRequest == null ) {
             return null;
@@ -312,43 +285,6 @@ public class ProductMapperImpl implements ProductMapper {
         List<ProductPriceResponse> list1 = new ArrayList<ProductPriceResponse>( list.size() );
         for ( ProductPrice productPrice : list ) {
             list1.add( productPriceToProductPriceResponse( productPrice ) );
-        }
-
-        return list1;
-    }
-
-    protected ProductPriceResponse productPriceToProductPriceResponse1(ProductPrice productPrice, ProductLookupContext context) {
-        if ( productPrice == null ) {
-            return null;
-        }
-
-        ProductPriceResponse productPriceResponse = new ProductPriceResponse();
-
-        productPriceResponse.setId( productPrice.getId() );
-        productPriceResponse.setCreatedBy( productPrice.getCreatedBy() );
-        productPriceResponse.setCreatedAt( productPrice.getCreatedAt() );
-        productPriceResponse.setUpdatedBy( productPrice.getUpdatedBy() );
-        productPriceResponse.setUpdatedAt( productPrice.getUpdatedAt() );
-        productPriceResponse.setCode( productPrice.getCode() );
-        productPriceResponse.setProductCode( productPrice.getProductCode() );
-        productPriceResponse.setUnitCode( productPrice.getUnitCode() );
-        productPriceResponse.setCostPrice( productPrice.getCostPrice() );
-        productPriceResponse.setSalePrice( productPrice.getSalePrice() );
-        productPriceResponse.setIsDefault( productPrice.getIsDefault() );
-        productPriceResponse.setAppliedDate( productPrice.getAppliedDate() );
-        productPriceResponse.setStatus( productPrice.getStatus() );
-
-        return productPriceResponse;
-    }
-
-    protected List<ProductPriceResponse> productPriceListToProductPriceResponseList1(List<ProductPrice> list, ProductLookupContext context) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<ProductPriceResponse> list1 = new ArrayList<ProductPriceResponse>( list.size() );
-        for ( ProductPrice productPrice : list ) {
-            list1.add( productPriceToProductPriceResponse1( productPrice, context ) );
         }
 
         return list1;

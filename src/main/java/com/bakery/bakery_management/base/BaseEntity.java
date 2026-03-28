@@ -20,7 +20,7 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private StatusCode status;
+    private StatusCode status = StatusCode.ACTIVE;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

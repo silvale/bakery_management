@@ -2,10 +2,13 @@ package com.bakery.bakery_management.repository;
 
 import com.bakery.bakery_management.domain.entity.Inventory;
 import com.bakery.bakery_management.domain.enums.WarehouseType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +35,9 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
     """)
     List<Inventory> findAllForExport(String code, WarehouseType warehouseType);
 
+    Page<Inventory> findByWarehouseType(WarehouseType warehouseType, Pageable pageable);
 
-    List<Inventory> findByWarehouseType(WarehouseType warehouseType);
+
+    Optional<Inventory> findByWarehouseTypeAndProductCodeAndExpiryDate(WarehouseType warehouseType, String productCode, LocalDateTime expiryDate);
+    List<Inventory> findByWarehouseTypeAndProductCodeOrderByExpiryDateAsc(WarehouseType warehouseType, String productCode);
 }

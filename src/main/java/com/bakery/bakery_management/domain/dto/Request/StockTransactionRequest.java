@@ -1,0 +1,19 @@
+package com.bakery.bakery_management.domain.dto.Request;
+
+import com.bakery.bakery_management.domain.enums.ExpiryInputType;
+import com.bakery.bakery_management.domain.enums.ProductType;
+import com.bakery.bakery_management.domain.enums.StatusCode;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Data
+public class StockTransactionRequest {
+
+
+}

@@ -2,6 +2,7 @@ package com.bakery.bakery_management.repository;
 
 
 import com.bakery.bakery_management.domain.entity.Product;
+import com.bakery.bakery_management.domain.enums.StatusCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +19,9 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     boolean existsByCode(String code);
 
-    List<Product>  findByCodeIn(Set<String> productCodes);
+    List<Product> findByCodeIn(Set<String> productCodes);
+
+    List<Product> findAllByCodeInAndStatus(List<String> codes, StatusCode status);
 
     @Query("SELECT p FROM Product p " +
             "LEFT JOIN FETCH p.prices pr " +

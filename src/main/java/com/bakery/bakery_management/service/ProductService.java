@@ -9,6 +9,7 @@ import com.bakery.bakery_management.domain.dto.Response.ProductPriceResponse;
 import com.bakery.bakery_management.domain.dto.Response.ProductResponse;
 import com.bakery.bakery_management.domain.entity.Product;
 import com.bakery.bakery_management.domain.entity.ProductPrice;
+import com.bakery.bakery_management.domain.entity.Unit;
 import com.bakery.bakery_management.domain.enums.ExpiryInputType;
 import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.bakery.bakery_management.exception.BusinessException;
@@ -20,17 +21,16 @@ import com.bakery.bakery_management.repository.ProductPriceRepository;
 import com.bakery.bakery_management.repository.ProductRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService extends AdminOperationService<ProductRequest, ProductResponse, Product> {
 
-    private final ProductRepository productRepository;
+    private final ProductRepository repository;
     private final ProductMapper productMapper;
     private final ProductPriceService priceService;
     private final ProductPriceRepository priceRepository;
@@ -39,8 +39,13 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     private final UnitService unitService;
 
     // Constructor Injection
-    public ProductService(ProductRepository productRepository, ProductMapper productMapper, ProductPriceService priceService, ProductPriceRepository productPriceRepository, ProductPriceMapper priceMapper, UnitService unitService) {
-        this.productRepository = productRepository;
+    public ProductService(ProductRepository repository,
+                          ProductMapper productMapper,
+                          ProductPriceService priceService,
+                          ProductPriceRepository productPriceRepository,
+                          ProductPriceMapper priceMapper,
+                          UnitService unitService) {
+        this.repository = repository;
         this.productMapper = productMapper;
         this.priceService = priceService;
         this.priceRepository = productPriceRepository;
@@ -50,7 +55,7 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
 
     @Override
     protected JpaRepository<Product, UUID> getRepository() {
-        return this.productRepository;
+        return this.repository;
     }
 
     @Override
@@ -144,5 +149,21 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
                     response.setCurrentSalesPrice(p.getSalePrice());
                     response.setCurrentCostPrice(p.getCostPrice());
                 });
+    }
+
+    public Map<String, ReferenceResponse> getMapByCodes(List<String> codes) {
+        if (CollectionUtils.isEmpty(codes)) {
+            return Collections.emptyMap();
+        }
+
+        // 1. Tìm tất cả Unit theo danh sách Code truyền vào
+        List<Product> products = repository.findAllByCodeInAndStatus(codes, StatusCode.ACTIVE);
+
+        // 2. Chuyển đổi List thành Map <Code, ReferenceResponse>
+        return products.stream().collect(Collectors.toMap(
+                Product::getCode,
+                u -> new ReferenceResponse(u.getCode(), u.getName()),
+                (existing, replacement) -> existing // Nếu trùng Code thì lấy cái đầu tiên, tránh crash
+        ));
     }
 }

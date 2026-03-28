@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 @Data
 public class ExportItemRequest {
     private String productCode;
-    private BigDecimal quantity;
     private String unitCode;
+    private BigDecimal quantity;
+    private BigDecimal costPrice;
     private BigDecimal salePrice;
 }

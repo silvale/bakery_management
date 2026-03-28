@@ -1,9 +1,9 @@
 package com.bakery.bakery_management.service;
 
 
+import com.bakery.bakery_management.Utils.MappingUtils;
 import com.bakery.bakery_management.base.AdminOperationService;
 import com.bakery.bakery_management.domain.PageResult;
-import com.bakery.bakery_management.domain.dto.ReferenceResponse;
 import com.bakery.bakery_management.domain.dto.Request.*;
 import com.bakery.bakery_management.domain.dto.Response.ExportResponse;
 import com.bakery.bakery_management.domain.dto.Response.ImportResponse;
@@ -33,11 +33,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.bakery.bakery_management.domain.enums.ReferenceType.EXPORT_TO_KITCHEN;
+import static com.bakery.bakery_management.domain.enums.ReferenceType.RETURN_TO_STORAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +49,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     private final ProductRepository productRepository;
     private final ProductPriceService priceService;
     private final UnitService unitService;
+    private final ProductService productService;
 
 
     // --- NHẬP KHO ---
@@ -70,8 +71,8 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
             inventoryRepository.save(inv);
 
             // 3. Save Transaction
-            saveTx(request.getReferenceId(), item.getProductCode(), item.getQuantity(),
-                    item.getLotNumber(), finalExpiry, request.getWarehouseType(), TransactionType.IMPORT, request.getReferenceType());
+            saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                    finalExpiry, request.getWarehouseType(), TransactionType.IMPORT, request.getReferenceType());
         }
 
         return buildImportResponse(request);
@@ -80,36 +81,131 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     // --- XUẤT KHO (FEFO) ---
     @Transactional
     public ExportResponse processExport(ExportRequest request) {
+        List<StockTransaction> savedTransactions = new ArrayList<>();
+
         for (ExportItemRequest item : request.getItems()) {
+            // 1. Tìm Product từ Code (Reference Type mapping)
             Product product = productRepository.findByCode(item.getProductCode())
                     .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
 
+            if (TransactionType.EXPORT.equals(request.getTransactionType())) {
+                switch (request.getReferenceType()) {
+                    case EXPORT_TO_KITCHEN -> {
+                        // Trừ kho Main
+                        Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
+                                WarehouseType.MAIN_STORAGE,
+                                item.getProductCode(),
+                                item.getQuantity(),
+                                EXPORT_TO_KITCHEN
+                        );
+
+                        // Cộng vào kho Bếp
+                        deductedBatches.forEach((expiryDate, qty) -> {
+                            addStock(WarehouseType.KITCHEN,
+                                    item.getProductCode(),
+                                    item.getUnitCode(),
+                                    request.getReferenceId(),
+                                    qty,
+                                    expiryDate);
+
+                            saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                                    expiryDate, WarehouseType.MAIN_STORAGE, TransactionType.EXPORT, request.getReferenceType());
+                        });
+
+                    }
+                    case RETURN_TO_STORAGE -> {
+                        Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
+                                WarehouseType.KITCHEN,
+                                item.getProductCode(),
+                                item.getQuantity(),
+                                RETURN_TO_STORAGE
+                        );
+
+                        deductedBatches.forEach((expiryDate, qty) -> {
+                            addStock(WarehouseType.MAIN_STORAGE,
+                                    item.getProductCode(),
+                                    item.getUnitCode(),
+                                    request.getReferenceId(),
+                                    qty,
+                                    expiryDate);
+
+                            saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                                    expiryDate, WarehouseType.KITCHEN, TransactionType.EXPORT, request.getReferenceType());
+                        });
+                    }
+                    // Case mới chỉ cần thêm tại đây...
+                }
+
+            }
             // Sync giá bán nếu có
             if (item.getSalePrice() != null) {
                 priceService.syncPrice(product.getCode(), item.getUnitCode(), BigDecimal.ZERO, item.getSalePrice(), product.getType());
             }
 
-            // Logic FEFO trừ kho
-            BigDecimal remaining = item.getQuantity();
-            List<Inventory> stocks = inventoryRepository.findAllForExport(product.getCode(), request.getWarehouseType());
-
-            for (Inventory stock : stocks) {
-                if (remaining.compareTo(BigDecimal.ZERO) <= 0) break;
-                BigDecimal take = stock.getQuantity().min(remaining);
-
-                stock.setQuantity(stock.getQuantity().subtract(take));
-                remaining = remaining.subtract(take);
-
-                saveTx(request.getReferenceId(), item.getProductCode(), take.negate(),
-                        stock.getLotNumber(), stock.getExpiryDate(), request.getWarehouseType(), TransactionType.EXPORT, request.getReferenceType());
-                inventoryRepository.save(stock);
-            }
-
-            if (remaining.compareTo(BigDecimal.ZERO) > 0) {
-                throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK, "Thiếu hàng cho mã: " + product.getCode());
-            }
         }
         return buildExportResponse(request);
+    }
+
+    private Map<LocalDateTime, BigDecimal> deductStockFEFO(WarehouseType type, String code, BigDecimal totalDeduct, ReferenceType referenceType) {
+        // Lấy tất cả lô, ưu tiên hạn gần
+        List<Inventory> inventories = inventoryRepository
+                .findByWarehouseTypeAndProductCodeOrderByExpiryDateAsc(type, code);
+
+        // Kiểm tra tổng tồn kho trước khi xử lý
+        BigDecimal available = inventories.stream()
+                .map(Inventory::getQuantity)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (available.compareTo(totalDeduct) < 0) {
+            throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK, "Kho " + type + " không đủ hàng");
+        }
+
+        Map<LocalDateTime, BigDecimal> deductedDetails = new HashMap<>();
+        BigDecimal remainingNeed = totalDeduct;
+
+        for (Inventory inv : inventories) {
+            if (remainingNeed.compareTo(BigDecimal.ZERO) <= 0) break;
+
+            BigDecimal currentQty = inv.getQuantity();
+            BigDecimal deductAmount;
+
+            if (currentQty.compareTo(remainingNeed) >= 0) {
+                // Lô này dư hoặc vừa đủ
+                deductAmount = remainingNeed;
+                inv.setQuantity(currentQty.subtract(remainingNeed));
+                remainingNeed = BigDecimal.ZERO;
+            } else {
+                // Lô này thiếu, lấy hết sạch lô này
+                deductAmount = currentQty;
+                remainingNeed = remainingNeed.subtract(currentQty);
+                inv.setQuantity(BigDecimal.ZERO);
+            }
+
+            if (deductAmount.compareTo(BigDecimal.ZERO) > 0) {
+                inventoryRepository.save(inv);
+                deductedDetails.put(inv.getExpiryDate(), deductAmount);
+            }
+            saveTx(inv.getReferenceId(), inv.getProductCode(), inv.getUnitCode(), totalDeduct, inv.getExpiryDate(), WarehouseType.KITCHEN, TransactionType.IMPORT, referenceType);
+        }
+        return deductedDetails;
+    }
+
+    private void addStock(WarehouseType type, String code, String unitCode, String referenceId, BigDecimal amount, LocalDateTime expiryDate) {
+        Inventory inventory = inventoryRepository
+                .findByWarehouseTypeAndProductCodeAndExpiryDate(type, code, expiryDate)
+                .orElseGet(() -> {
+                    Inventory newInv = new Inventory();
+                    newInv.setWarehouseType(type);
+                    newInv.setProductCode(code);
+                    newInv.setUnitCode(unitCode);
+                    newInv.setReferenceId(referenceId);
+                    newInv.setExpiryDate(expiryDate);
+                    newInv.setQuantity(BigDecimal.ZERO);
+                    return newInv;
+                });
+
+        inventory.setQuantity(inventory.getQuantity().add(amount));
+        inventoryRepository.save(inventory);
     }
 
     private LocalDateTime calculateExpiry(Product p, ImportItemRequest item) {
@@ -120,17 +216,17 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
             case DATE ->
                     item.getManualExpiryDate() != null ? item.getManualExpiryDate() : p.getFixedExpiryDate().atTime(LocalTime.MAX);
             case NUMBER ->
-                    LocalDateTime.now().plusDays(item.getManualExpiryDays() != null ? item.getManualExpiryDays() : p.getDefaultExpiryDays());
+                    LocalDateTime.now().with(LocalTime.MAX).plusDays(item.getManualExpiryDays() != null ? item.getManualExpiryDays() : p.getDefaultExpiryDays());
             default -> null;
         };
     }
 
-    private void saveTx(String refId, String pCode, BigDecimal qty, String lot, LocalDateTime exp, WarehouseType wType, TransactionType tType, ReferenceType rType) {
+    private void saveTx(String refId, String pCode, String unitCode, BigDecimal qty, LocalDateTime exp, WarehouseType wType, TransactionType tType, ReferenceType rType) {
         StockTransaction tx = new StockTransaction();
         tx.setReferenceId(refId);
         tx.setProductCode(pCode);
+        tx.setUnitCode(unitCode);
         tx.setQuantity(qty);
-        tx.setLotNumber(lot);
         tx.setExpiryDate(exp);
         tx.setWarehouseType(wType);
         tx.setTransactionType(tType);
@@ -144,7 +240,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
         inv.setWarehouseType(warehouseType);
         inv.setUnitCode(item.getUnitCode());
         inv.setExpiryDate(expiryDate);
-        inv.setLotNumber(item.getLotNumber()); // Lưu số lô của lần nhập đầu tiên để tham chiếu
+        inv.setReferenceId(item.getReferenceId()); // Lưu số lô của lần nhập đầu tiên để tham chiếu
         inv.setQuantity(BigDecimal.ZERO); // Sẽ được cộng dồn ở hàm gọi
         return inv;
     }
@@ -178,29 +274,27 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     }
 
     public PageResult<InventoryResponse> getListInventoryByType(Pageable pageable, String warehoueType) {
-        Page<Inventory> entities = inventoryRepository.findAll(pageable);
+        Page<Inventory> entities = inventoryRepository.findByWarehouseType(WarehouseType.valueOf(warehoueType), pageable);
 
         List<InventoryResponse> responseList = entities.getContent().stream()
-                .filter(i -> i.getWarehouseType() == WarehouseType.valueOf(warehoueType))
                 .map(getMapper()::toResponse)
                 .collect(Collectors.toList());
 
-        List<String> unitCodes = entities.stream()
-                .map(Inventory::getUnitCode)
-                .filter(Objects::nonNull)
-                .distinct()
-                .toList();
+        MappingUtils.mapReference(
+                entities.getContent(),
+                responseList,
+                Inventory::getUnitCode,
+                unitService::getMapByCodes,
+                InventoryResponse::setUnit
+        );
 
-        Map<String, ReferenceResponse> unitMap = unitService.getMapByCodes(unitCodes);
-        for (int i = 0; i < entities.getContent().size(); i++) {
-            Inventory entity = entities.getContent().get(i);
-            InventoryResponse res = responseList.get(i);
-
-            if (entity.getUnitCode() != null && unitMap != null) {
-                res.setUnit(unitMap.get(entity.getUnitCode()));
-            }
-        }
-
+        MappingUtils.mapReference(
+                entities.getContent(),
+                responseList,
+                Inventory::getProductCode,
+                productService::getMapByCodes,
+                InventoryResponse::setProduct
+        );
         return PageResult.ofPage(new PageImpl<>(responseList, pageable, entities.getTotalElements()));
     }
 
@@ -216,20 +310,12 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
 
     @Override
     protected void afterGetList(List<Inventory> entities, List<InventoryResponse> responses) {
-        List<String> unitCodes = entities.stream()
-                .map(Inventory::getUnitCode)
-                .filter(Objects::nonNull)
-                .distinct()
-                .toList();
-
-        Map<String, ReferenceResponse> unitMap = unitService.getMapByCodes(unitCodes);
-        for (int i = 0; i < entities.size(); i++) {
-            Inventory entity = entities.get(i);
-            InventoryResponse res = responses.get(i);
-
-            if (entity.getUnitCode() != null && unitMap != null) {
-                res.setUnit(unitMap.get(entity.getUnitCode()));
-            }
-        }
+        MappingUtils.mapReference(
+                entities,
+                responses,
+                Inventory::getUnitCode,
+                unitService::getMapByCodes,
+                InventoryResponse::setUnit
+        );
     }
 }

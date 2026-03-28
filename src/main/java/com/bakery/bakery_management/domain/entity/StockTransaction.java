@@ -22,7 +22,6 @@ public class StockTransaction extends JpaEntityAuditable<UUID> {
     private String referenceId; // Mã phiếu nhập/xuất
     private BigDecimal quantity; // Nhập (+), Xuất (-)
     private String unitCode;
-    private String lotNumber;
     private LocalDateTime expiryDate;
 
     @Enumerated(EnumType.STRING)

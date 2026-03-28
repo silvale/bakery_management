@@ -23,7 +23,9 @@ public class Inventory extends JpaEntityAuditable<UUID> {
 
     private BigDecimal quantity;
     private String unitCode;
-    private String lotNumber; // Lưu vết lô nhập gần nhất
+
+    @Column(name = "reference_id")
+    private String referenceId; // Lưu vết lô nhập gần nhất
     private LocalDateTime expiryDate; // Ngày hết hạn cụ thể
 
     public boolean isExpired() {

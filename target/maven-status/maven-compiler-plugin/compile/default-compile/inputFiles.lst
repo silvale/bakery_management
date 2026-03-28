@@ -1,6 +1,7 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/ToEntity.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/AdminBaseResource.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/ExportResponse.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Request/StockTransactionRequest.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/entity/StockTransaction.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Request/ProductRequest.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/AdminCrudService.java
@@ -20,6 +21,7 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/BakeryManagementApplication.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/UuidGenerator.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/config/WebConfig.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/StockTransactionResponse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/ProductPriceMapper.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/QueryService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/controller/InventoryController.java
@@ -38,6 +40,7 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/ProductResponse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/UnitMapper.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/entity/Branch.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/StockTransactionMapper.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/BaseResponse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/Response/UnitResponse.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/JpaEntityAuditable.java

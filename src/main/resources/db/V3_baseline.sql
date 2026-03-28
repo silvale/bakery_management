@@ -1,0 +1,40 @@
+CREATE TABLE public.inventory (
+	id uuid NOT NULL,
+	reference_id varchar(255) NULL,
+	warehouse_type varchar(255) NULL,
+	product_code varchar(255) NULL,
+	unit_code varchar(255) NULL,
+	quantity numeric(38, 2) NULL,
+	expiry_date timestamp(6) NULL,
+	status varchar(255) NULL,
+	created_at timestamptz(6) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	created_by varchar(255) DEFAULT 'SYSTEM'::character varying NOT NULL,
+	updated_at timestamptz(6) NULL,
+	updated_by varchar(255) NULL,
+	CONSTRAINT inventory_pkey PRIMARY KEY (id),
+	CONSTRAINT inventory_product_code_fkey FOREIGN KEY (product_code) REFERENCES public.product(code),
+	CONSTRAINT inventory_unit_code_fkey FOREIGN KEY (unit_code) REFERENCES public.unit(code),
+	CONSTRAINT inventory_warehouse_type_fkey FOREIGN KEY (warehouse_type) REFERENCES public.warehouse(code)
+);
+
+CREATE TABLE public.stock_transactions (
+	id uuid NOT NULL,
+	reference_id varchar(255) NULL,
+	warehouse_type varchar(255) NULL,
+	reference_type varchar(255) NOT NULL,
+	transaction_type varchar(255) NOT NULL,
+	product_code varchar(255) NULL,
+	quantity numeric(38, 2) NULL,
+	unit_code varchar(255) NULL,
+	note varchar(255) NULL,
+	expiry_date timestamp(6) NULL,
+	created_at timestamptz(6) NOT NULL,
+	created_by varchar(255) NOT NULL,
+	status varchar(255) NULL,
+	updated_at timestamptz(6) NULL,
+	updated_by varchar(255) NULL,
+	CONSTRAINT stock_transactions_pkey PRIMARY KEY (id),
+	CONSTRAINT stock_transactions_product_code_fkey FOREIGN KEY (product_code) REFERENCES public.product(code),
+	CONSTRAINT stock_transactions_unit_code_fkey FOREIGN KEY (unit_code) REFERENCES public.unit(code),
+	CONSTRAINT stock_transactions_warehouse_type_fkey FOREIGN KEY (warehouse_type) REFERENCES public.warehouse(code)
+);

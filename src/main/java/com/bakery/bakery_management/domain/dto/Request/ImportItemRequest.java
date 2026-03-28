@@ -19,7 +19,7 @@ public class ImportItemRequest {
     private String productCode;
     private BigDecimal quantity;
     private String unitCode;
-    private String lotNumber;
+    private String referenceId;
 
     // Control Expiry từ FE
     private ExpiryInputType expiryType;
