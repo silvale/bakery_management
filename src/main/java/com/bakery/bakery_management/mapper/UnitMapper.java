@@ -1,8 +1,8 @@
 package com.bakery.bakery_management.mapper;
 
 
-import com.bakery.bakery_management.domain.dto.Request.UnitRequest;
-import com.bakery.bakery_management.domain.dto.Response.UnitResponse;
+import com.bakery.bakery_management.domain.dto.request.UnitRequest;
+import com.bakery.bakery_management.domain.dto.response.UnitResponse;
 import com.bakery.bakery_management.domain.entity.Unit;
 import org.mapstruct.Mapper;
 

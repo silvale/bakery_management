@@ -2,8 +2,8 @@ package com.bakery.bakery_management.controller;
 
 import com.bakery.bakery_management.base.AdminBaseResource;
 import com.bakery.bakery_management.base.AdminOperationService;
-import com.bakery.bakery_management.domain.dto.Request.ProductPriceRequest;
-import com.bakery.bakery_management.domain.dto.Response.ProductPriceResponse;
+import com.bakery.bakery_management.domain.dto.request.ProductPriceRequest;
+import com.bakery.bakery_management.domain.dto.response.ProductPriceResponse;
 import com.bakery.bakery_management.domain.entity.ProductPrice;
 import com.bakery.bakery_management.service.ProductPriceService;
 import org.springframework.web.bind.annotation.RequestMapping;

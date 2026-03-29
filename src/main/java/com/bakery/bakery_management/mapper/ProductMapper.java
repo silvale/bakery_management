@@ -1,14 +1,10 @@
 package com.bakery.bakery_management.mapper;
 
 
-import com.bakery.bakery_management.domain.dto.Request.ProductRequest;
-import com.bakery.bakery_management.domain.dto.Response.ProductResponse;
+import com.bakery.bakery_management.domain.dto.request.ProductRequest;
+import com.bakery.bakery_management.domain.dto.response.ProductResponse;
 import com.bakery.bakery_management.domain.entity.Product;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
-import java.util.List;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 

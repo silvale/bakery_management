@@ -1,8 +1,8 @@
 package com.bakery.bakery_management.mapper;
 
 
-import com.bakery.bakery_management.domain.dto.Request.InventoryRequest;
-import com.bakery.bakery_management.domain.dto.Response.InventoryResponse;
+import com.bakery.bakery_management.domain.dto.request.InventoryRequest;
+import com.bakery.bakery_management.domain.dto.response.InventoryResponse;
 import com.bakery.bakery_management.domain.entity.Inventory;
 import org.mapstruct.Mapper;
 

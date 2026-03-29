@@ -1,4 +1,4 @@
-package com.bakery.bakery_management.domain.dto.Request;
+package com.bakery.bakery_management.domain.dto.request;
 
 import com.bakery.bakery_management.domain.enums.ExpiryInputType;
 import com.bakery.bakery_management.domain.enums.ProductType;
@@ -31,4 +31,6 @@ public class ProductRequest {
     private LocalDate fixedExpiryDate;
 
     List<ProductPriceRequest> prices;
+
+    private FormulaRequest formula;
 }

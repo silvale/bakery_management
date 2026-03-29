@@ -1,12 +1,10 @@
-package com.bakery.bakery_management.domain.dto.Response;
+package com.bakery.bakery_management.domain.dto.response;
 
 import com.bakery.bakery_management.domain.dto.BaseResponse;
 import com.bakery.bakery_management.domain.dto.ReferenceResponse;
 import com.bakery.bakery_management.domain.enums.ReferenceType;
 import com.bakery.bakery_management.domain.enums.TransactionType;
 import com.bakery.bakery_management.domain.enums.WarehouseType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,8 +1,8 @@
 package com.bakery.bakery_management.service;
 
 import com.bakery.bakery_management.base.AdminOperationService;
-import com.bakery.bakery_management.domain.dto.Request.ProductPriceRequest;
-import com.bakery.bakery_management.domain.dto.Response.ProductPriceResponse;
+import com.bakery.bakery_management.domain.dto.request.ProductPriceRequest;
+import com.bakery.bakery_management.domain.dto.response.ProductPriceResponse;
 import com.bakery.bakery_management.domain.entity.ProductPrice;
 import com.bakery.bakery_management.domain.enums.ProductType;
 import com.bakery.bakery_management.domain.enums.StatusCode;

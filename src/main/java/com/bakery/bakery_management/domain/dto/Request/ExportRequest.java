@@ -1,9 +1,8 @@
-package com.bakery.bakery_management.domain.dto.Request;
+package com.bakery.bakery_management.domain.dto.request;
 
 import com.bakery.bakery_management.domain.enums.ReferenceType;
 import com.bakery.bakery_management.domain.enums.TransactionType;
 import com.bakery.bakery_management.domain.enums.WarehouseType;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

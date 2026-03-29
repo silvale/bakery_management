@@ -3,8 +3,8 @@ package com.bakery.bakery_management.service;
 
 import com.bakery.bakery_management.base.AdminOperationService;
 import com.bakery.bakery_management.domain.dto.ReferenceResponse;
-import com.bakery.bakery_management.domain.dto.Request.UnitRequest;
-import com.bakery.bakery_management.domain.dto.Response.UnitResponse;
+import com.bakery.bakery_management.domain.dto.request.UnitRequest;
+import com.bakery.bakery_management.domain.dto.response.UnitResponse;
 import com.bakery.bakery_management.domain.entity.Unit;
 import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.bakery.bakery_management.mapper.AdminBaseMapper;
@@ -62,10 +62,8 @@ public class UnitService extends AdminOperationService<UnitRequest, UnitResponse
             return Collections.emptyMap();
         }
 
-        // 1. Tìm tất cả Unit theo danh sách Code truyền vào
         List<Unit> units = repository.findAllByCodeInAndStatus(codes, StatusCode.ACTIVE);
 
-        // 2. Chuyển đổi List thành Map <Code, ReferenceResponse>
         return units.stream().collect(Collectors.toMap(
                 Unit::getCode,
                 u -> new ReferenceResponse(u.getCode(), u.getName()),

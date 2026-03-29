@@ -1,4 +1,4 @@
-package com.bakery.bakery_management.domain.dto.Response;
+package com.bakery.bakery_management.domain.dto.response;
 
 import com.bakery.bakery_management.domain.dto.BaseResponse;
 import com.bakery.bakery_management.domain.dto.ReferenceResponse;

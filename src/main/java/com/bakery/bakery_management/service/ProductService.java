@@ -1,24 +1,30 @@
 package com.bakery.bakery_management.service;
 
 
+import com.bakery.bakery_management.Utils.MappingUtils;
 import com.bakery.bakery_management.base.AdminOperationService;
 import com.bakery.bakery_management.domain.dto.ReferenceResponse;
-import com.bakery.bakery_management.domain.dto.Request.ProductPriceRequest;
-import com.bakery.bakery_management.domain.dto.Request.ProductRequest;
-import com.bakery.bakery_management.domain.dto.Response.ProductPriceResponse;
-import com.bakery.bakery_management.domain.dto.Response.ProductResponse;
+import com.bakery.bakery_management.domain.dto.request.ProductPriceRequest;
+import com.bakery.bakery_management.domain.dto.request.ProductRequest;
+import com.bakery.bakery_management.domain.dto.response.FormulaComponentResponse;
+import com.bakery.bakery_management.domain.dto.response.FormulaResponse;
+import com.bakery.bakery_management.domain.dto.response.ProductPriceResponse;
+import com.bakery.bakery_management.domain.dto.response.ProductResponse;
+import com.bakery.bakery_management.domain.entity.Formula;
+import com.bakery.bakery_management.domain.entity.FormulaComponent;
 import com.bakery.bakery_management.domain.entity.Product;
 import com.bakery.bakery_management.domain.entity.ProductPrice;
-import com.bakery.bakery_management.domain.entity.Unit;
 import com.bakery.bakery_management.domain.enums.ExpiryInputType;
+import com.bakery.bakery_management.domain.enums.ProductType;
 import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.bakery.bakery_management.exception.BusinessException;
 import com.bakery.bakery_management.exception.ErrorCode;
-import com.bakery.bakery_management.mapper.AdminBaseMapper;
-import com.bakery.bakery_management.mapper.ProductMapper;
-import com.bakery.bakery_management.mapper.ProductPriceMapper;
+import com.bakery.bakery_management.mapper.*;
+import com.bakery.bakery_management.repository.FormulaComponentRepository;
+import com.bakery.bakery_management.repository.FormulaRepository;
 import com.bakery.bakery_management.repository.ProductPriceRepository;
 import com.bakery.bakery_management.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -28,30 +34,23 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService extends AdminOperationService<ProductRequest, ProductResponse, Product> {
 
     private final ProductRepository repository;
-    private final ProductMapper productMapper;
-    private final ProductPriceService priceService;
     private final ProductPriceRepository priceRepository;
-    private final ProductPriceMapper priceMapper;
+    private final FormulaRepository formulaRepository;
+    private final FormulaComponentRepository componentRepository;
 
+
+    private final ProductMapper productMapper;
+    private final FormulaMapper formulaMapper;
+    private final ProductPriceMapper priceMapper;
+    private final FormulaComponentMapper componentMapper;
+
+    private final ProductPriceService priceService;
     private final UnitService unitService;
 
-    // Constructor Injection
-    public ProductService(ProductRepository repository,
-                          ProductMapper productMapper,
-                          ProductPriceService priceService,
-                          ProductPriceRepository productPriceRepository,
-                          ProductPriceMapper priceMapper,
-                          UnitService unitService) {
-        this.repository = repository;
-        this.productMapper = productMapper;
-        this.priceService = priceService;
-        this.priceRepository = productPriceRepository;
-        this.priceMapper = priceMapper;
-        this.unitService = unitService;
-    }
 
     @Override
     protected JpaRepository<Product, UUID> getRepository() {
@@ -80,6 +79,23 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
         } else if (ExpiryInputType.NONE.equals(expiryType)) {
             request.setDefaultExpiryDays(null);
         }
+
+        if (request.getFormula() != null) {
+
+            if (request.getType() != ProductType.FINISHED) {
+                throw new BusinessException("Only FINISHED product can have formula");
+            }
+
+            // validate ingredient
+            request.getFormula().getComponents().forEach(c -> {
+                Product ingredient = repository.findByCode(c.getProductCode())
+                        .orElseThrow(() -> new BusinessException("Ingredient not found"));
+
+                if (ingredient.getType() == ProductType.FINISHED) {
+                    throw new BusinessException("Ingredient must be RAW or SEMI");
+                }
+            });
+        }
     }
 
     @Override
@@ -90,6 +106,25 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
                 priceService.syncPrice(request.getCode(), request.getUnitCode(), price.getCostPrice(), price.getSalePrice(), request.getType());
             }
         }
+
+        if (request.getFormula() == null) return;
+
+        Formula formula = formulaMapper.toEntity(request.getFormula());
+        formula.setProductCode(entity.getCode());
+
+        formula = formulaRepository.save(formula);
+        Formula finalFormula = formula;
+        List<FormulaComponent> components = request.getFormula()
+                .getComponents()
+                .stream()
+                .map(req -> {
+                    FormulaComponent c = componentMapper.toEntity(req);
+                    c.setFormula(finalFormula);
+                    return c;
+                })
+                .toList();
+
+        componentRepository.saveAll(components);
 
     }
 
@@ -137,9 +172,10 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     protected void afterDetail(Product entity, ProductResponse response) {
         List<ProductPrice> allPrices = priceRepository
                 .findByProductCodeAndStatusOrderByAppliedDateDesc(entity.getCode(), StatusCode.ACTIVE);
-        List<ProductPriceResponse> priceResponses = priceMapper.toResponse(allPrices).stream().toList();
         ReferenceResponse unitRef = unitService.getByCode(entity.getUnitCode());
         response.setUnit(unitRef);
+
+        List<ProductPriceResponse> priceResponses = priceMapper.toResponse(allPrices).stream().toList();
         response.setPrices(priceResponses);
 
         priceResponses.stream()
@@ -149,17 +185,55 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
                     response.setCurrentSalesPrice(p.getSalePrice());
                     response.setCurrentCostPrice(p.getCostPrice());
                 });
+
+        Optional<Formula> optional =
+                formulaRepository.findTopByProductCodeOrderByVersionDesc(entity.getCode());
+
+        if (optional.isEmpty()) return;
+
+        Formula formula = optional.get();
+
+        // map formula
+        FormulaResponse formulaResponse = formulaMapper.toResponse(formula);
+
+        List<FormulaComponent> components = formula.getComponents();
+        List<FormulaComponentResponse> componentResponses =
+                components.stream()
+                        .map(componentMapper::toResponse)
+                        .toList();
+
+        formulaResponse.setComponents(componentResponses);
+        response.setFormula(formulaResponse);
+        MappingUtils.mapReference(
+                List.of(formula),
+                List.of(formulaResponse),
+                Formula::getProductCode,
+                this::getMapByCodes,
+                FormulaResponse::setProduct
+        );
+
+        MappingUtils.mapReference(
+                components,
+                componentResponses,
+                FormulaComponent::getProductCode,
+                this::getMapByCodes,
+                FormulaComponentResponse::setProduct
+        );
+
+        MappingUtils.mapReference(
+                components,
+                componentResponses,
+                FormulaComponent::getUnitCode,
+                unitService::getMapByCodes,
+                FormulaComponentResponse::setUnit
+        );
     }
 
     public Map<String, ReferenceResponse> getMapByCodes(List<String> codes) {
         if (CollectionUtils.isEmpty(codes)) {
             return Collections.emptyMap();
         }
-
-        // 1. Tìm tất cả Unit theo danh sách Code truyền vào
         List<Product> products = repository.findAllByCodeInAndStatus(codes, StatusCode.ACTIVE);
-
-        // 2. Chuyển đổi List thành Map <Code, ReferenceResponse>
         return products.stream().collect(Collectors.toMap(
                 Product::getCode,
                 u -> new ReferenceResponse(u.getCode(), u.getName()),

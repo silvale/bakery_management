@@ -1,9 +1,9 @@
 package com.bakery.bakery_management.mapper;
 
-import com.bakery.bakery_management.domain.dto.Request.ProductPriceRequest;
-import com.bakery.bakery_management.domain.dto.Request.ProductRequest;
-import com.bakery.bakery_management.domain.dto.Response.ProductPriceResponse;
-import com.bakery.bakery_management.domain.dto.Response.ProductResponse;
+import com.bakery.bakery_management.domain.dto.request.ProductPriceRequest;
+import com.bakery.bakery_management.domain.dto.request.ProductRequest;
+import com.bakery.bakery_management.domain.dto.response.ProductPriceResponse;
+import com.bakery.bakery_management.domain.dto.response.ProductResponse;
 import com.bakery.bakery_management.domain.entity.Product;
 import com.bakery.bakery_management.domain.entity.ProductPrice;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-28T16:41:58+0700",
+    date = "2026-03-29T16:56:13+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
@@ -168,10 +168,10 @@ public class ProductMapperImpl implements ProductMapper {
         productResponse.setName( entity.getName() );
         productResponse.setType( entity.getType() );
         productResponse.setStatus( entity.getStatus() );
-        productResponse.setPrices( productPriceListToProductPriceResponseList( entity.getPrices() ) );
         productResponse.setExpiryType( entity.getExpiryType() );
         productResponse.setDefaultExpiryDays( entity.getDefaultExpiryDays() );
         productResponse.setFixedExpiryDate( entity.getFixedExpiryDate() );
+        productResponse.setPrices( productPriceListToProductPriceResponseList( entity.getPrices() ) );
 
         return productResponse;
     }

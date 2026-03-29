@@ -5,10 +5,13 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class ExportItemRequest {
+public class FormulaComponentRequest {
+
     private String productCode;
-    private String unitCode;
+
     private BigDecimal quantity;
-    private BigDecimal costPrice;
-    private BigDecimal salePrice;
+
+    private String unitCode;
+
+    private String note;
 }

@@ -1,4 +1,4 @@
-package com.bakery.bakery_management.domain.dto.Response;
+package com.bakery.bakery_management.domain.dto.response;
 
 import com.bakery.bakery_management.domain.dto.BaseResponse;
 import com.bakery.bakery_management.domain.dto.ReferenceResponse;
@@ -21,14 +21,13 @@ public class ProductResponse extends BaseResponse {
     private ProductType type;
     private ReferenceResponse unit;
     private StatusCode status;
-    private List<ProductPriceResponse> prices;
     private BigDecimal currentSalesPrice;
     private BigDecimal currentCostPrice;
     private ExpiryInputType expiryType;
-
     private Integer defaultExpiryDays;
-
     private LocalDate fixedExpiryDate;
+    private List<ProductPriceResponse> prices;
+    private FormulaResponse formula;
 
 
 }

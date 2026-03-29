@@ -1,4 +1,4 @@
-package com.bakery.bakery_management.domain.dto.Response;
+package com.bakery.bakery_management.domain.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

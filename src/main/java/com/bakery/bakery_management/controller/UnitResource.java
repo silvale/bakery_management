@@ -2,8 +2,8 @@ package com.bakery.bakery_management.controller;
 
 import com.bakery.bakery_management.base.AdminBaseResource;
 import com.bakery.bakery_management.base.AdminOperationService;
-import com.bakery.bakery_management.domain.dto.Request.UnitRequest;
-import com.bakery.bakery_management.domain.dto.Response.UnitResponse;
+import com.bakery.bakery_management.domain.dto.request.UnitRequest;
+import com.bakery.bakery_management.domain.dto.response.UnitResponse;
 import com.bakery.bakery_management.domain.entity.Unit;
 import com.bakery.bakery_management.service.UnitService;
 import org.springframework.web.bind.annotation.RequestMapping;

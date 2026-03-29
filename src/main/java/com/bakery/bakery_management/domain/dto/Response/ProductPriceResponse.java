@@ -1,15 +1,12 @@
-package com.bakery.bakery_management.domain.dto.Response;
+package com.bakery.bakery_management.domain.dto.response;
 
 import com.bakery.bakery_management.domain.dto.BaseResponse;
 import com.bakery.bakery_management.domain.enums.StatusCode;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter

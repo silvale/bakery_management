@@ -1,4 +1,4 @@
-package com.bakery.bakery_management.domain.dto.Request;
+package com.bakery.bakery_management.domain.dto.request;
 
 import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.fasterxml.jackson.annotation.JsonFormat;

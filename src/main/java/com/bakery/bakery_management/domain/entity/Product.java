@@ -21,7 +21,9 @@ import java.util.UUID;
 public class Product extends JpaEntityAuditable<UUID> {
 
     private String code;
+
     private String name;
+
     private String unitCode;
 
     @Enumerated(EnumType.STRING)
