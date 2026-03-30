@@ -18,6 +18,7 @@ com/bakery/bakery_management/domain/PageResult$PageMeta.class
 com/bakery/bakery_management/domain/dto/request/ProductRequest$ProductRequestBuilder.class
 com/bakery/bakery_management/base/UuidGenerator.class
 com/bakery/bakery_management/Utils/MappingUtils.class
+com/bakery/bakery_management/mapper/UnitConversionMapperImpl.class
 com/bakery/bakery_management/domain/enums/ExpiryInputType.class
 com/bakery/bakery_management/domain/dto/request/FormulaRequest.class
 com/bakery/bakery_management/domain/dto/request/ImportRequest.class
