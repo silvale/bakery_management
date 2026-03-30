@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -16,6 +17,8 @@ public class ImportRequest {
 
     @NotBlank
     private String referenceId;    // Mã phiếu nhập (ví dụ: GR-2026-001)
+
+    private LocalDate processDate;
 
     @NotNull
     private WarehouseType warehouseType;

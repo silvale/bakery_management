@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -19,8 +20,11 @@ import java.util.UUID;
 public class StockTransaction extends JpaEntityAuditable<UUID> {
 
     private String productCode;
-    private String referenceId; // Mã phiếu nhập/xuất
-    private BigDecimal quantity; // Nhập (+), Xuất (-)
+    private String referenceId;
+
+    @Column(name = "process_date")
+    private LocalDate processDate;
+    private BigDecimal quantity;
     private String unitCode;
     private LocalDateTime expiryDate;
 
@@ -28,7 +32,7 @@ public class StockTransaction extends JpaEntityAuditable<UUID> {
     private WarehouseType warehouseType;
 
     @Enumerated(EnumType.STRING)
-    private TransactionType transactionType; // IMPORT, EXPORT
+    private TransactionType transactionType;
 
     @Enumerated(EnumType.STRING)
     private ReferenceType referenceType;

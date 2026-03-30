@@ -32,5 +32,5 @@ public class ProductRequest {
 
     List<ProductPriceRequest> prices;
 
-    private FormulaRequest formula;
+    private List<FormulaRequest> formula;
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -19,14 +20,20 @@ public class Inventory extends JpaEntityAuditable<UUID> {
     private String productCode;
 
     @Enumerated(EnumType.STRING)
-    private WarehouseType warehouseType; // MAIN_STORAGE, KITCHEN
+    private WarehouseType warehouseType;
 
     private BigDecimal quantity;
+
     private String unitCode;
 
     @Column(name = "reference_id")
-    private String referenceId; // Lưu vết lô nhập gần nhất
-    private LocalDateTime expiryDate; // Ngày hết hạn cụ thể
+    private String referenceId;
+
+    private LocalDateTime expiryDate;
+
+    @Column(name = "process_date")
+    private LocalDate processDate;
+
 
     public boolean isExpired() {
         return expiryDate != null && expiryDate.isBefore(LocalDateTime.now());

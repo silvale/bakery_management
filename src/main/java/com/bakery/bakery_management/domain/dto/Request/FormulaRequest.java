@@ -4,13 +4,18 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class FormulaRequest {
 
+    private UUID id;
+
     private String productCode; // FINISHED
 
-    private Integer version;
+    private UUID formulaId;
+
+    private Integer formulaVersion;
 
     private BigDecimal lossRate;
 

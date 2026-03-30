@@ -1,5 +1,6 @@
 package com.bakery.bakery_management.domain.entity;
 
+import com.bakery.bakery_management.base.JpaEntityAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import com.bakery.bakery_management.base.JpaEntityAuditable;
 
 @Entity
 @Table(name = "product_prices")
@@ -17,6 +17,12 @@ public class ProductPrice extends JpaEntityAuditable<UUID> {
 
     @Column(name = "code", unique = true, nullable = false)
     private String code;
+
+    @Column(name = "formula_id")
+    private UUID formulaId;
+
+    @Column(name = "formula_version")
+    private Integer formulaVersion;
 
     @Column(name = "product_code", nullable = false)
     private String productCode;

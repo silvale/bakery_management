@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,7 +14,9 @@ public class FormulaResponse extends BaseResponse {
 
     private ReferenceResponse product;
 
-    private Integer version;
+    private UUID formulaId;
+
+    private Integer formulaVersion;
 
     private BigDecimal lossRate;
 

@@ -41,41 +41,52 @@ public class ProductPriceService extends AdminOperationService<ProductPriceReque
     }
 
     @Transactional
-    public void syncPrice(String productCode, String unitCode, BigDecimal cost, BigDecimal sale, ProductType type) {
-        // 1. Tìm giá mặc định hiện tại cho sản phẩm và đơn vị này
-        Optional<ProductPrice> currentPriceOpt = repository.findByProductCodeAndUnitCodeAndIsDefaultTrue(productCode, unitCode);
+    public void syncPrice(String productCode,
+                          String unitCode,
+                          BigDecimal cost,
+                          BigDecimal sale,
+                          ProductType type) {
 
-        // 2. Kiểm tra sự thay đổi (So sánh giá nhập hoặc giá bán tùy theo ProductType)
+        Optional<ProductPrice> currentPriceOpt =
+                repository.findByProductCodeAndUnitCodeAndIsDefaultTrue(productCode, unitCode);
+
         boolean isChanged = currentPriceOpt.isEmpty();
 
         if (currentPriceOpt.isPresent()) {
             ProductPrice current = currentPriceOpt.get();
-            // Nếu là hàng nguyên liệu (RAW/SEMI): check costPrice. Nếu là hàng bán (FINISHED): check salePrice
-            boolean costChanged = (cost.compareTo(BigDecimal.ZERO) > 0 && cost.compareTo(current.getCostPrice()) != 0);
-            boolean saleChanged = (sale.compareTo(BigDecimal.ZERO) > 0 && sale.compareTo(current.getSalePrice()) != 0);
-            isChanged = costChanged || saleChanged;
+
+            boolean costChanged = isDifferent(cost, current.getCostPrice());
+            boolean saleChanged = isDifferent(sale, current.getSalePrice());
+
+            if (type == ProductType.RAW || type == ProductType.SEMI) {
+                isChanged = costChanged;
+            } else if (type == ProductType.FINISHED) {
+                isChanged = costChanged || saleChanged;
+            }
         }
 
-        if (isChanged) {
-            // 3. Gỡ bỏ mặc định cũ (nếu có)
-            currentPriceOpt.ifPresent(p -> {
-                p.setIsDefault(false);
-                repository.save(p);
-            });
-
-            // 4. Tạo bản ghi giá mới (Lịch sử giá)
-            ProductPrice newPrice = new ProductPrice();
-            newPrice.setCode("PRC-" + System.currentTimeMillis()); // Generate mã giá đơn giản
-            newPrice.setProductCode(productCode);
-            newPrice.setUnitCode(unitCode);
-            newPrice.setCostPrice(cost);
-            newPrice.setSalePrice(sale);
-            newPrice.setAppliedDate(LocalDateTime.now());
-            newPrice.setIsDefault(true); // Đặt làm giá mới nhất
-            newPrice.setStatus(StatusCode.ACTIVE);
-
-            repository.save(newPrice);
+        if (!isChanged) {
+            return;
         }
+
+        // 1. bỏ default cũ
+        currentPriceOpt.ifPresent(p -> {
+            p.setIsDefault(false);
+            repository.save(p);
+        });
+
+        // 2. tạo price mới
+        ProductPrice newPrice = new ProductPrice();
+        newPrice.setCode(generatePriceCode()); // tách riêng method
+        newPrice.setProductCode(productCode);
+        newPrice.setUnitCode(unitCode);
+        newPrice.setCostPrice(cost);
+        newPrice.setSalePrice(sale);
+        newPrice.setAppliedDate(LocalDateTime.now());
+        newPrice.setIsDefault(true);
+        newPrice.setStatus(StatusCode.ACTIVE);
+
+        repository.save(newPrice);
     }
 
     public Map<String, ProductPriceResponse> getDefaultPriceResponsesByCodes(List<String> codes) {
@@ -94,4 +105,15 @@ public class ProductPriceService extends AdminOperationService<ProductPriceReque
                         (existing, replacement) -> existing
                 ));
     }
+
+    private boolean isDifferent(BigDecimal a, BigDecimal b) {
+        if (a == null && b == null) return false;
+        if (a == null || b == null) return true;
+        return a.compareTo(b) != 0;
+    }
+
+    private String generatePriceCode() {
+        return "PRC-" + System.currentTimeMillis();
+    }
+
 }

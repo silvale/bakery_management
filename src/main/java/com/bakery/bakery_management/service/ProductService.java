@@ -4,6 +4,7 @@ package com.bakery.bakery_management.service;
 import com.bakery.bakery_management.Utils.MappingUtils;
 import com.bakery.bakery_management.base.AdminOperationService;
 import com.bakery.bakery_management.domain.dto.ReferenceResponse;
+import com.bakery.bakery_management.domain.dto.request.FormulaRequest;
 import com.bakery.bakery_management.domain.dto.request.ProductPriceRequest;
 import com.bakery.bakery_management.domain.dto.request.ProductRequest;
 import com.bakery.bakery_management.domain.dto.response.FormulaComponentResponse;
@@ -50,6 +51,7 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
 
     private final ProductPriceService priceService;
     private final UnitService unitService;
+    private final FormulaCostService formulaCostService;
 
 
     @Override
@@ -87,45 +89,59 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
             }
 
             // validate ingredient
-            request.getFormula().getComponents().forEach(c -> {
-                Product ingredient = repository.findByCode(c.getProductCode())
-                        .orElseThrow(() -> new BusinessException("Ingredient not found"));
+            List<FormulaRequest> formulas = request.getFormula();
+            for (FormulaRequest item : formulas) {
+                item.getComponents().forEach(c -> {
+                    Product ingredient = repository.findByCode(c.getProductCode())
+                            .orElseThrow(() -> new BusinessException("Ingredient not found"));
 
-                if (ingredient.getType() == ProductType.FINISHED) {
-                    throw new BusinessException("Ingredient must be RAW or SEMI");
-                }
-            });
+                    if (ingredient.getType() == ProductType.FINISHED) {
+                        throw new BusinessException("Ingredient must be RAW or SEMI");
+                    }
+                });
+            }
         }
     }
 
     @Override
     protected void afterCreate(ProductRequest request, Product entity) {
+        // =========================
+        // 1. CREATE PRICE (INPUT)
+        // =========================
         List<ProductPriceRequest> prices = request.getPrices();
         if (prices != null && !prices.isEmpty()) {
             for (ProductPriceRequest price : prices) {
-                priceService.syncPrice(request.getCode(), request.getUnitCode(), price.getCostPrice(), price.getSalePrice(), request.getType());
+                priceService.create(price);
             }
         }
 
+        // =========================
+        // 2. CREATE FORMULA
+        // =========================
         if (request.getFormula() == null) return;
+        List<FormulaRequest> formulas = request.getFormula();
+        if (!formulas.isEmpty()) {
+            for (FormulaRequest item : formulas) {
+                Formula formula = formulaMapper.toEntity(item);
+                formula.setProductCode(entity.getCode());
 
-        Formula formula = formulaMapper.toEntity(request.getFormula());
-        formula.setProductCode(entity.getCode());
+                formula = formulaRepository.save(formula);
 
-        formula = formulaRepository.save(formula);
-        Formula finalFormula = formula;
-        List<FormulaComponent> components = request.getFormula()
-                .getComponents()
-                .stream()
-                .map(req -> {
-                    FormulaComponent c = componentMapper.toEntity(req);
-                    c.setFormula(finalFormula);
-                    return c;
-                })
-                .toList();
+                Formula finalFormula = formula;
 
-        componentRepository.saveAll(components);
+                List<FormulaComponent> components = item
+                        .getComponents()
+                        .stream()
+                        .map(req -> {
+                            FormulaComponent c = componentMapper.toEntity(req);
+                            c.setFormula(finalFormula);
+                            return c;
+                        })
+                        .toList();
 
+                componentRepository.saveAll(components);
+            }
+        }
     }
 
     @Override
@@ -133,6 +149,91 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
         List<ProductPriceRequest> prices = request.getPrices();
         for (ProductPriceRequest price : prices) {
             priceService.syncPrice(request.getCode(), request.getUnitCode(), price.getCostPrice(), price.getSalePrice(), request.getType());
+        }
+
+        // =========================
+        // 2. UPDATE FORMULA
+        // =========================
+        if (request.getFormula() == null) return;
+
+        List<FormulaRequest> requestFormulas = request.getFormula();
+
+        // 1. load existing
+        List<Formula> existingFormulas =
+                formulaRepository.findByProductCode(entity.getCode());
+
+        Map<UUID, Formula> existingMap = existingFormulas.stream()
+                .collect(Collectors.toMap(Formula::getId, f -> f));
+
+        // 2. track id từ request
+        Set<UUID> requestIds = requestFormulas.stream()
+                .map(FormulaRequest::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+
+        // =========================
+        // 3. DELETE missing
+        // =========================
+        for (Formula old : existingFormulas) {
+            if (!requestIds.contains(old.getId())) {
+                componentRepository.deleteByFormulaId(old.getId());
+                formulaRepository.delete(old);
+            }
+        }
+
+
+        // =========================
+        // 4. UPSERT (create/update)
+        // =========================
+        for (FormulaRequest item : requestFormulas) {
+
+            Formula formula;
+
+            // =====================
+            // UPDATE
+            // =====================
+            if (item.getId() != null && existingMap.containsKey(item.getId())) {
+
+                formula = existingMap.get(item.getId());
+
+                // map lại field (trừ id, productCode)
+                formulaMapper.updateEntity(item, formula);
+
+                formulaRepository.save(formula);
+
+                // ❗ clear component cũ
+                componentRepository.deleteByFormulaId(formula.getId());
+            }
+
+            // =====================
+            // CREATE
+            // =====================
+            else {
+                formula = formulaMapper.toEntity(item);
+                formula.setProductCode(entity.getCode());
+
+                formula = formulaRepository.save(formula);
+            }
+
+            Formula finalFormula = formula;
+
+            // =====================
+            // SAVE COMPONENT
+            // =====================
+            if (item.getComponents() != null && !item.getComponents().isEmpty()) {
+
+                List<FormulaComponent> components = item.getComponents()
+                        .stream()
+                        .map(req -> {
+                            FormulaComponent c = componentMapper.toEntity(req);
+                            c.setFormula(finalFormula);
+                            return c;
+                        })
+                        .toList();
+
+                componentRepository.saveAll(components);
+            }
         }
     }
 
@@ -187,7 +288,7 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
                 });
 
         Optional<Formula> optional =
-                formulaRepository.findTopByProductCodeOrderByVersionDesc(entity.getCode());
+                formulaRepository.findTopByProductCodeOrderByFormulaVersionDesc(entity.getCode());
 
         if (optional.isEmpty()) return;
 

@@ -6,17 +6,20 @@ import com.bakery.bakery_management.domain.enums.WarehouseType;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class InventoryResponse extends BaseResponse {
 
-    private ReferenceResponse product;
-    private WarehouseType warehouseType;
-    private BigDecimal quantity;
-    private ReferenceResponse unit;
     private String referenceId;
+    private LocalDate processDate;
+    private WarehouseType warehouseType;
+    private ReferenceResponse product;
+    private ReferenceResponse unit;
+
+    private BigDecimal quantity;
     private LocalDateTime expiryDate;
 
 }

@@ -9,9 +9,7 @@ import java.util.UUID;
 
 public interface FormulaRepository extends JpaRepository<Formula, UUID> {
 
-    Optional<Formula> findByProductCodeAndVersion(String productCode, Integer version);
-
     List<Formula> findByProductCode(String productCode);
 
-    Optional<Formula> findTopByProductCodeOrderByVersionDesc(String productCode);
+    Optional<Formula> findTopByProductCodeOrderByFormulaVersionDesc(String productCode);
 }
