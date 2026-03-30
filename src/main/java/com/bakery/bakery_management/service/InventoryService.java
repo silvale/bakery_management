@@ -65,6 +65,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
             priceService.syncPrice(product.getCode(), item.getUnitCode(), item.getCostPrice(), BigDecimal.ZERO, product.getType());
 
             // 2. Update Inventory
+            item.setReferenceId(request.getReferenceId());
             Inventory inv = inventoryRepository.findByUniqueStock(product.getCode(), request.getWarehouseType(), finalExpiry)
                     .orElseGet(() -> createNewInventory(item, request.getWarehouseType(), finalExpiry));
             inv.setQuantity(inv.getQuantity().add(item.getQuantity()));
