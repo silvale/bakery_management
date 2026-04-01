@@ -3,6 +3,7 @@ com/bakery/bakery_management/mapper/UnitMapper.class
 com/bakery/bakery_management/domain/dto/response/ExportResponse$ExportResponseBuilder.class
 com/bakery/bakery_management/exception/ErrorCode.class
 com/bakery/bakery_management/domain/dto/request/FormulaComponentRequest.class
+com/bakery/bakery_management/domain/dto/request/StocktakeRequest.class
 com/bakery/bakery_management/service/ProductService.class
 com/bakery/bakery_management/domain/dto/response/UnitResponse.class
 com/bakery/bakery_management/domain/dto/response/ImportResponse.class
@@ -108,6 +109,7 @@ com/bakery/bakery_management/base/GenerateBakeryId.class
 com/bakery/bakery_management/domain/enums/ProductType.class
 com/bakery/bakery_management/base/JpaEntity.class
 com/bakery/bakery_management/mapper/StockTransactionMapperImpl.class
+com/bakery/bakery_management/domain/dto/request/StocktakeItem.class
 com/bakery/bakery_management/controller/ProductPriceResource.class
 com/bakery/bakery_management/service/ProductPriceService.class
 com/bakery/bakery_management/domain/dto/request/UnitRequest$UnitRequestBuilder.class

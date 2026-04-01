@@ -62,7 +62,7 @@ public class UnitService extends AdminOperationService<UnitRequest, UnitResponse
             return Collections.emptyMap();
         }
 
-        List<Unit> units = repository.findAllByCodeInAndStatus(codes, StatusCode.ACTIVE);
+        List<Unit> units = repository.findAllByCodeIn(codes);
 
         return units.stream().collect(Collectors.toMap(
                 Unit::getCode,

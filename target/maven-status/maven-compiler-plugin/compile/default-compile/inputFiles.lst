@@ -1,3 +1,4 @@
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/request/StocktakeRequest.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/mapper/ToEntity.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/base/AdminBaseResource.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/controller/StockTransactionController.java
@@ -60,6 +61,7 @@
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/request/ExportItemRequest.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/enums/StatusCode.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/repository/UnitConversionRepository.java
+/Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/request/StocktakeItem.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/service/InventoryService.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/entity/Product.java
 /Volumes/Data/bakery_management/src/main/java/com/bakery/bakery_management/domain/dto/response/ProductResponse.java

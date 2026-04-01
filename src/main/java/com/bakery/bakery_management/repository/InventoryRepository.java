@@ -25,19 +25,15 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
     """)
     Optional<Inventory> findByUniqueStock(String productCode, WarehouseType warehouseType, LocalDateTime expiryDate);
 
-    // Tìm để xuất kho (FEFO)
-    @Query("""
-        SELECT i FROM Inventory i 
-        WHERE i.productCode = :code 
-          AND i.warehouseType = :warehouseType 
-          AND i.quantity > 0 
-        ORDER BY i.expiryDate ASC NULLS LAST
-    """)
-    List<Inventory> findAllForExport(String code, WarehouseType warehouseType);
-
     Page<Inventory> findByWarehouseType(WarehouseType warehouseType, Pageable pageable);
 
-
     Optional<Inventory> findByWarehouseTypeAndProductCodeAndExpiryDate(WarehouseType warehouseType, String productCode, LocalDateTime expiryDate);
+
     List<Inventory> findByWarehouseTypeAndProductCodeOrderByExpiryDateAsc(WarehouseType warehouseType, String productCode);
+
+    Optional<Inventory> findByProductCodeAndWarehouseTypeAndExpiryDate(
+            String productCode,
+            WarehouseType warehouseType,
+            LocalDateTime expiryDate
+    );
 }

@@ -14,8 +14,6 @@ public class FormulaResponse extends BaseResponse {
 
     private ReferenceResponse product;
 
-    private UUID formulaId;
-
     private Integer formulaVersion;
 
     private BigDecimal lossRate;

@@ -15,6 +15,6 @@ public interface UnitRepository extends JpaRepository<Unit, UUID> {
 
     Optional<Unit> findByCode(String code);
 
-    List<Unit> findAllByCodeInAndStatus(List<String> codes, StatusCode status);
+    List<Unit> findAllByCodeIn(List<String> codes);
 
 }

@@ -24,7 +24,7 @@ public interface ProductPriceRepository extends JpaRepository<ProductPrice, UUID
           AND p.isDefault = true """)
     void deactivateByProductCode(@Param("productCode") String productCode);
 
-    Optional<ProductPrice> findByProductCodeAndUnitCodeAndIsDefaultTrue(String productCode, String unitCode);
+    Optional<ProductPrice> findByCodeAndProductCodeAndUnitCode(String code, String productCode, String unitCode);
 
     @Query("SELECT p FROM ProductPrice p " +
             "WHERE p.productCode IN :codes " +

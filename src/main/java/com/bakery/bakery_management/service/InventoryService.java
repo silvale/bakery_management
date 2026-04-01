@@ -62,7 +62,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
             LocalDateTime finalExpiry = calculateExpiry(product, item);
 
             // 1. Sync Price
-            priceService.syncPrice(product.getCode(), item.getUnitCode(), item.getCostPrice(), BigDecimal.ZERO, product.getType());
+            priceService.syncPrice(item.getPriceCode(), product.getCode(), item.getUnitCode(), item.getCostPrice(), BigDecimal.ZERO, true, product.getType());
 
             // 2. Update Inventory
             item.setReferenceId(request.getReferenceId());
@@ -85,10 +85,11 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
         List<StockTransaction> savedTransactions = new ArrayList<>();
 
         for (ExportItemRequest item : request.getItems()) {
-            // 1. Tìm Product từ Code (Reference Type mapping)
             Product product = productRepository.findByCode(item.getProductCode())
                     .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
 
+
+            // Quản lý xuất hàng.
             if (TransactionType.EXPORT.equals(request.getTransactionType())) {
                 switch (request.getReferenceType()) {
                     case EXPORT_TO_KITCHEN -> {
@@ -114,6 +115,30 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                         });
 
                     }
+                    case EXPORT_TO_STORE -> {
+                        Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
+                                WarehouseType.KITCHEN,
+                                item.getProductCode(),
+                                item.getQuantity(),
+                                RETURN_TO_STORAGE
+                        );
+
+                        deductedBatches.forEach((expiryDate, qty) -> {
+                            addStock(WarehouseType.STORE,
+                                    item.getProductCode(),
+                                    item.getUnitCode(),
+                                    request.getReferenceId(),
+                                    qty,
+                                    expiryDate);
+                            saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                                    expiryDate, WarehouseType.STORE, TransactionType.EXPORT, request.getReferenceType());
+                        });
+                    }
+                }
+            }
+            // Quản lý trả hàng.
+            if (TransactionType.RETURN.equals(request.getTransactionType())) {
+                switch (request.getReferenceType()) {
                     case RETURN_TO_STORAGE -> {
                         Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
                                 WarehouseType.KITCHEN,
@@ -134,18 +159,130 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                                     expiryDate, WarehouseType.KITCHEN, TransactionType.EXPORT, request.getReferenceType());
                         });
                     }
-                    // Case mới chỉ cần thêm tại đây...
+                    case RETURN_TO_SUPPLIER -> {
+                        Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
+                                request.getWarehouseType(),
+                                item.getProductCode(),
+                                item.getQuantity(),
+                                request.getReferenceType()
+                        );
+                        deductedBatches.forEach((expiryDate, qty) -> {
+                            saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                                    expiryDate, request.getWarehouseType(), TransactionType.RETURN, request.getReferenceType());
+                        });
+                    }
                 }
+            }
 
+            // Quản lý huỷ sản phẩm
+            if (TransactionType.DISCARD.equals(request.getTransactionType())) {
+                switch (request.getReferenceType()) {
+                    case DAMAGED -> {
+                        Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
+                                request.getWarehouseType(),
+                                item.getProductCode(),
+                                item.getQuantity(),
+                                request.getReferenceType()
+                        );
+                        deductedBatches.forEach((expiryDate, qty) -> {
+                            saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                                    expiryDate, request.getWarehouseType(), TransactionType.DISCARD, request.getReferenceType());
+                        });
+                    }
+                }
             }
             // Sync giá bán nếu có
             if (item.getSalePrice() != null) {
-                priceService.syncPrice(product.getCode(), item.getUnitCode(), BigDecimal.ZERO, item.getSalePrice(), product.getType());
+                priceService.syncPrice(item.getPriceCode(), product.getCode(), item.getUnitCode(), BigDecimal.ZERO, item.getSalePrice(), true, product.getType());
             }
 
         }
         return buildExportResponse(request);
     }
+
+    @Transactional
+    public void stocktake(ExportRequest request) {
+
+        LocalDateTime today = request.getProcessDate();
+
+        for (ExportItemRequest item : request.getItems()) {
+
+            String product = item.getProductCode();
+            LocalDateTime expiry = item.getExpiryDate();
+            BigDecimal remaining = item.getQuantity();
+
+            // 1. Lấy inventory hiện tại
+            Inventory inv = inventoryRepository
+                    .findByProductCodeAndWarehouseTypeAndExpiryDate(product, WarehouseType.STORE, expiry)
+                    .orElseThrow(() -> new RuntimeException("Inventory not found"));
+
+            BigDecimal opening = inv.getQuantity();
+
+            // ❗ validate sớm
+            if (remaining.compareTo(opening) > 0) {
+                throw new RuntimeException("Remaining > opening for product " + product);
+            }
+
+            BigDecimal sold;
+            BigDecimal discard;
+
+            // 2. Logic chính (FIX compare date)
+            if (expiry.toLocalDate().equals(today.toLocalDate())) {
+                discard = remaining;
+                sold = opening.subtract(discard);
+                remaining = BigDecimal.ZERO;
+            } else {
+                discard = BigDecimal.ZERO;
+                sold = opening.subtract(remaining);
+            }
+
+            // 3. Validate
+            if (sold.compareTo(BigDecimal.ZERO) < 0) {
+                throw new RuntimeException("Sold < 0 for product " + product);
+            }
+
+            // 4. SALE transaction
+            if (sold.compareTo(BigDecimal.ZERO) > 0) {
+
+                saveTx(request.getReferenceId(), product, item.getUnitCode(), sold,
+                        today, request.getWarehouseType(), TransactionType.SALE, request.getReferenceType());
+
+                // ❗ FIX: update inventory đúng expiry + trừ đi sold
+                Inventory invStore = inventoryRepository
+                        .findByProductCodeAndWarehouseTypeAndExpiryDate(product, request.getWarehouseType(), expiry)
+                        .orElseThrow(() -> new RuntimeException("Inventory not found"));
+
+                invStore.setQuantity(invStore.getQuantity().subtract(sold));
+
+                if (invStore.getQuantity().compareTo(BigDecimal.ZERO) < 0) {
+                    throw new RuntimeException("Inventory < 0 after SALE");
+                }
+
+                inventoryRepository.save(invStore);
+            }
+
+            // 5. DISCARD transaction
+            if (discard.compareTo(BigDecimal.ZERO) > 0) {
+
+                saveTx(request.getReferenceId(), product, item.getUnitCode(), discard,
+                        today, request.getWarehouseType(), TransactionType.DISCARD, request.getReferenceType());
+
+                // ❗ FIX: update inventory đúng expiry + trừ đi discard
+                Inventory invStore = inventoryRepository
+                        .findByProductCodeAndWarehouseTypeAndExpiryDate(product, request.getWarehouseType(), expiry)
+                        .orElseThrow(() -> new RuntimeException("Inventory not found"));
+
+                invStore.setQuantity(invStore.getQuantity().subtract(discard));
+
+                if (invStore.getQuantity().compareTo(BigDecimal.ZERO) < 0) {
+                    throw new RuntimeException("Inventory < 0 after DISCARD");
+                }
+
+                inventoryRepository.save(invStore);
+            }
+        }
+    }
+
 
     private Map<LocalDateTime, BigDecimal> deductStockFEFO(WarehouseType type, String code, BigDecimal totalDeduct, ReferenceType referenceType) {
         // Lấy tất cả lô, ưu tiên hạn gần
@@ -241,8 +378,8 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
         inv.setWarehouseType(warehouseType);
         inv.setUnitCode(item.getUnitCode());
         inv.setExpiryDate(expiryDate);
-        inv.setReferenceId(item.getReferenceId()); // Lưu số lô của lần nhập đầu tiên để tham chiếu
-        inv.setQuantity(BigDecimal.ZERO); // Sẽ được cộng dồn ở hàm gọi
+        inv.setReferenceId(item.getReferenceId());
+        inv.setQuantity(BigDecimal.ZERO);
         return inv;
     }
 

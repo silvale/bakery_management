@@ -5,10 +5,13 @@ import com.bakery.bakery_management.domain.dto.ReferenceResponse;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class FormulaComponentResponse extends BaseResponse {
+
+    private UUID formulaId;
 
     private ReferenceResponse product; // enrich
 

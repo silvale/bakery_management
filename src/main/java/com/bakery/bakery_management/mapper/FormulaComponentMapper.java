@@ -18,4 +18,7 @@ public interface FormulaComponentMapper extends AdminBaseMapper<
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "unit", ignore = true)
     FormulaComponentResponse toResponse(FormulaComponent entity);
+
+    @Mapping(target = "formula", ignore = true)
+    FormulaComponent toEntity(FormulaComponentRequest request);
 }

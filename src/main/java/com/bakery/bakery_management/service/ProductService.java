@@ -148,7 +148,7 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     protected void afterUpdate(ProductRequest request, Product entity) {
         List<ProductPriceRequest> prices = request.getPrices();
         for (ProductPriceRequest price : prices) {
-            priceService.syncPrice(request.getCode(), request.getUnitCode(), price.getCostPrice(), price.getSalePrice(), request.getType());
+            priceService.syncPrice(price.getCode(), request.getCode(), price.getUnitCode(), price.getCostPrice(), price.getSalePrice(), price.isDefault(), request.getType());
         }
 
         // =========================

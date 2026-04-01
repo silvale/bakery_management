@@ -9,6 +9,7 @@ import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.bakery.bakery_management.mapper.AdminBaseMapper;
 import com.bakery.bakery_management.mapper.ProductPriceMapper;
 import com.bakery.bakery_management.repository.ProductPriceRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,20 +42,21 @@ public class ProductPriceService extends AdminOperationService<ProductPriceReque
     }
 
     @Transactional
-    public void syncPrice(String productCode,
+    public void syncPrice(String code,
+                          String productCode,
                           String unitCode,
                           BigDecimal cost,
                           BigDecimal sale,
+                          boolean isDefault,
                           ProductType type) {
 
         Optional<ProductPrice> currentPriceOpt =
-                repository.findByProductCodeAndUnitCodeAndIsDefaultTrue(productCode, unitCode);
+                repository.findByCodeAndProductCodeAndUnitCode(code, productCode, unitCode);
 
         boolean isChanged = currentPriceOpt.isEmpty();
 
         if (currentPriceOpt.isPresent()) {
             ProductPrice current = currentPriceOpt.get();
-
             boolean costChanged = isDifferent(cost, current.getCostPrice());
             boolean saleChanged = isDifferent(sale, current.getSalePrice());
 
@@ -63,27 +65,28 @@ public class ProductPriceService extends AdminOperationService<ProductPriceReque
             } else if (type == ProductType.FINISHED) {
                 isChanged = costChanged || saleChanged;
             }
+
+            if (isChanged) {
+                current.setCostPrice(cost);
+                current.setSalePrice(sale);
+                current.setIsDefault(isDefault);
+                repository.save(current);
+                return;
+            }
         }
 
         if (!isChanged) {
             return;
         }
 
-        // 1. bỏ default cũ
-        currentPriceOpt.ifPresent(p -> {
-            p.setIsDefault(false);
-            repository.save(p);
-        });
-
-        // 2. tạo price mới
         ProductPrice newPrice = new ProductPrice();
-        newPrice.setCode(generatePriceCode()); // tách riêng method
+        newPrice.setCode(code);
         newPrice.setProductCode(productCode);
         newPrice.setUnitCode(unitCode);
         newPrice.setCostPrice(cost);
         newPrice.setSalePrice(sale);
         newPrice.setAppliedDate(LocalDateTime.now());
-        newPrice.setIsDefault(true);
+        newPrice.setIsDefault(isDefault);
         newPrice.setStatus(StatusCode.ACTIVE);
 
         repository.save(newPrice);

@@ -20,9 +20,6 @@ public class Formula extends JpaEntityAuditable<UUID> {
     @Column(name = "product_code")
     private String productCode;
 
-    @Column(name = "formula_id")
-    private UUID formulaId;
-
     @Column(name = "formula_version")
     private int formulaVersion;
 

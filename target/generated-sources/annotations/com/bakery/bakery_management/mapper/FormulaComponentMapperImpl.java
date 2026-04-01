@@ -10,27 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-30T21:39:03+0700",
+    date = "2026-04-01T22:26:20+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
 )
 @Component
 public class FormulaComponentMapperImpl implements FormulaComponentMapper {
-
-    @Override
-    public FormulaComponent toEntity(FormulaComponentRequest request) {
-        if ( request == null ) {
-            return null;
-        }
-
-        FormulaComponent formulaComponent = new FormulaComponent();
-
-        formulaComponent.setProductCode( request.getProductCode() );
-        formulaComponent.setQuantity( request.getQuantity() );
-        formulaComponent.setUnitCode( request.getUnitCode() );
-        formulaComponent.setNote( request.getNote() );
-
-        return formulaComponent;
-    }
 
     @Override
     public FormulaComponent update(FormulaComponentRequest request, FormulaComponent entity) {
@@ -135,5 +119,21 @@ public class FormulaComponentMapperImpl implements FormulaComponentMapper {
         formulaComponentResponse.setNote( entity.getNote() );
 
         return formulaComponentResponse;
+    }
+
+    @Override
+    public FormulaComponent toEntity(FormulaComponentRequest request) {
+        if ( request == null ) {
+            return null;
+        }
+
+        FormulaComponent formulaComponent = new FormulaComponent();
+
+        formulaComponent.setProductCode( request.getProductCode() );
+        formulaComponent.setQuantity( request.getQuantity() );
+        formulaComponent.setUnitCode( request.getUnitCode() );
+        formulaComponent.setNote( request.getNote() );
+
+        return formulaComponent;
     }
 }

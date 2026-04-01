@@ -13,8 +13,6 @@ public class FormulaRequest {
 
     private String productCode; // FINISHED
 
-    private UUID formulaId;
-
     private Integer formulaVersion;
 
     private BigDecimal lossRate;

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class ImportItemRequest {
 
     private String productCode;
+    private String priceCode;
     private BigDecimal quantity;
     private String unitCode;
     private String referenceId;
