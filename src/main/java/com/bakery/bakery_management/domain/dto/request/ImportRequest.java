@@ -16,7 +16,7 @@ import java.util.List;
 public class ImportRequest {
 
     @NotBlank
-    private String referenceId;    // Mã phiếu nhập (ví dụ: GR-2026-001)
+    private String referenceId;
 
     private LocalDate processDate;
 
@@ -32,6 +32,6 @@ public class ImportRequest {
     private String note;
 
     @NotEmpty
-    @Valid // Đảm bảo validate từng item bên dưới
+    @Valid
     private List<ImportItemRequest> items;
 }

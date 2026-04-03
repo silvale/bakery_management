@@ -4,7 +4,7 @@ public enum TransactionType {
     IMPORT,
     EXPORT,
     RETURN,
-    ADJ, // Adjustment điều chỉnh tồn kho
+    ADJUSTMENT, // Adjustment điều chỉnh tồn kho
     DISCARD,
     SALE,
     PRODUCT_OUT,

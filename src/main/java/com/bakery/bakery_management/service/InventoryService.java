@@ -8,6 +8,7 @@ import com.bakery.bakery_management.domain.dto.request.*;
 import com.bakery.bakery_management.domain.dto.response.ExportResponse;
 import com.bakery.bakery_management.domain.dto.response.ImportResponse;
 import com.bakery.bakery_management.domain.dto.response.InventoryResponse;
+import com.bakery.bakery_management.domain.dto.response.ProductPriceResponse;
 import com.bakery.bakery_management.domain.entity.Inventory;
 import com.bakery.bakery_management.domain.entity.Product;
 import com.bakery.bakery_management.domain.entity.StockTransaction;
@@ -82,12 +83,9 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     // --- XUẤT KHO (FEFO) ---
     @Transactional
     public ExportResponse processExport(ExportRequest request) {
-        List<StockTransaction> savedTransactions = new ArrayList<>();
-
         for (ExportItemRequest item : request.getItems()) {
             Product product = productRepository.findByCode(item.getProductCode())
                     .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
-
 
             // Quản lý xuất hàng.
             if (TransactionType.EXPORT.equals(request.getTransactionType())) {
@@ -136,10 +134,11 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                     }
                 }
             }
+
             // Quản lý trả hàng.
             if (TransactionType.RETURN.equals(request.getTransactionType())) {
                 switch (request.getReferenceType()) {
-                    case RETURN_TO_STORAGE -> {
+                    case RETURN_TO_STORAGE, INVALID_LIST -> {
                         Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
                                 WarehouseType.KITCHEN,
                                 item.getProductCode(),
@@ -159,7 +158,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                                     expiryDate, WarehouseType.KITCHEN, TransactionType.EXPORT, request.getReferenceType());
                         });
                     }
-                    case RETURN_TO_SUPPLIER -> {
+                    case RETURN_TO_SUPPLIER, INVALID_QUALITY, INVALID_QUANTITY -> {
                         Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
                                 request.getWarehouseType(),
                                 item.getProductCode(),
@@ -174,10 +173,9 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                 }
             }
 
-            // Quản lý huỷ sản phẩm
             if (TransactionType.DISCARD.equals(request.getTransactionType())) {
                 switch (request.getReferenceType()) {
-                    case DAMAGED -> {
+                    case DAMAGED, EXPIRED -> {
                         Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
                                 request.getWarehouseType(),
                                 item.getProductCode(),
@@ -187,6 +185,33 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                         deductedBatches.forEach((expiryDate, qty) -> {
                             saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
                                     expiryDate, request.getWarehouseType(), TransactionType.DISCARD, request.getReferenceType());
+                        });
+                    }
+                }
+            }
+            if (TransactionType.ADJUSTMENT.equals(request.getTransactionType())) {
+                switch (request.getReferenceType()) {
+                    case INCREATE -> {
+                        addStock(WarehouseType.MAIN_STORAGE,
+                                item.getProductCode(),
+                                item.getUnitCode(),
+                                request.getReferenceId(),
+                                item.getQuantity(),
+                                item.getExpiryDate());
+
+                        saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                                item.getExpiryDate(), WarehouseType.KITCHEN, TransactionType.EXPORT, request.getReferenceType());
+                    }
+                    case DECREATE -> {
+                        Map<LocalDateTime, BigDecimal> deductedBatches = deductStockFEFO(
+                                request.getWarehouseType(),
+                                item.getProductCode(),
+                                item.getQuantity(),
+                                request.getReferenceType()
+                        );
+                        deductedBatches.forEach((expiryDate, qty) -> {
+                            saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                                    expiryDate, request.getWarehouseType(), TransactionType.ADJUSTMENT, request.getReferenceType());
                         });
                     }
                 }
@@ -433,6 +458,20 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                 productService::getMapByCodes,
                 InventoryResponse::setProduct
         );
+
+        List<String> codes = entities.stream()
+                .map(Inventory::getProductCode)
+                .filter(Objects::nonNull)
+                .toList();
+
+        Map<String, ProductPriceResponse> priceMap = priceService.getDefaultPriceResponsesByCodes(codes);
+        for (InventoryResponse invRes : responseList) {
+            String code = invRes.getProduct().getCode();
+            ProductPriceResponse priceRes = priceMap.get(code);
+            invRes.setCurrentCostPrice(priceRes != null ? priceRes.getCostPrice() : BigDecimal.ZERO);
+            invRes.setCurrentSalesPrice(priceRes != null ? priceRes.getSalePrice() : BigDecimal.ZERO);
+        }
+
         return PageResult.ofPage(new PageImpl<>(responseList, pageable, entities.getTotalElements()));
     }
 
