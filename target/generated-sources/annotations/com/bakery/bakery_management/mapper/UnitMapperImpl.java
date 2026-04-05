@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-01T22:26:20+0700",
+    date = "2026-04-05T13:14:38+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
 )
 @Component
@@ -24,6 +24,10 @@ public class UnitMapperImpl implements UnitMapper {
 
         Unit unit = new Unit();
 
+        unit.setStatus( request.getStatus() );
+        unit.setCode( request.getCode() );
+        unit.setName( request.getName() );
+
         return unit;
     }
 
@@ -33,6 +37,10 @@ public class UnitMapperImpl implements UnitMapper {
             return entity;
         }
 
+        entity.setStatus( request.getStatus() );
+        entity.setCode( request.getCode() );
+        entity.setName( request.getName() );
+
         return entity;
     }
 
@@ -40,6 +48,16 @@ public class UnitMapperImpl implements UnitMapper {
     public Unit patch(UnitRequest request, Unit entity) {
         if ( request == null ) {
             return entity;
+        }
+
+        if ( request.getStatus() != null ) {
+            entity.setStatus( request.getStatus() );
+        }
+        if ( request.getCode() != null ) {
+            entity.setCode( request.getCode() );
+        }
+        if ( request.getName() != null ) {
+            entity.setName( request.getName() );
         }
 
         return entity;
@@ -100,5 +118,9 @@ public class UnitMapperImpl implements UnitMapper {
         if ( request == null ) {
             return;
         }
+
+        entity.setStatus( request.getStatus() );
+        entity.setCode( request.getCode() );
+        entity.setName( request.getName() );
     }
 }
