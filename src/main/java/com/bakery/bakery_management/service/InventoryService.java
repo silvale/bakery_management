@@ -36,6 +36,8 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.bakery.bakery_management.domain.enums.TransactionType.IMPORT;
+
 @Service
 @RequiredArgsConstructor
 public class InventoryService extends AdminOperationService<InventoryRequest, InventoryResponse, Inventory> {
@@ -52,27 +54,66 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     // --- NHẬP KHO ---
     @Transactional
     public ImportResponse processImport(ImportRequest request) {
-        for (ImportItemRequest item : request.getItems()) {
-            Product product = productRepository.findByCode(item.getProductCode())
-                    .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
+        switch (request.getTransactionType()) {
+            case IMPORT -> {
+                for (ImportItemRequest item : request.getItems()) {
+                    Product product = productRepository.findByCode(item.getProductCode())
+                            .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
 
-            LocalDateTime finalExpiry = calculateExpiry(product, item);
+                    LocalDateTime finalExpiry = calculateExpiry(product, item);
 
-            // 1. Sync Price
-            priceService.syncPrice(item.getPriceCode(), product.getCode(), item.getUnitCode(), item.getCostPrice(), BigDecimal.ZERO, true, product.getType());
+                    // 1. Sync Price
+                    priceService.syncPrice(item.getPriceCode(), product.getCode(), item.getUnitCode(), item.getCostPrice(), BigDecimal.ZERO, true, product.getType());
 
-            // 2. Update Inventory
-            item.setReferenceId(request.getReferenceId());
-            Inventory inv = inventoryRepository.findByUniqueStock(product.getCode(), request.getWarehouseType(), finalExpiry)
-                    .orElseGet(() -> createNewInventory(request.getWarehouseType(), item.getProductCode(), item.getUnitCode(), item.getReferenceId(), finalExpiry));
-            inv.setQuantity(inv.getQuantity().add(item.getQuantity()));
-            inventoryRepository.save(inv);
+                    // 2. Update Inventory
+                    item.setReferenceId(request.getReferenceId());
+                    Inventory inv = inventoryRepository.findByUniqueStock(product.getCode(), request.getWarehouseType(), finalExpiry)
+                            .orElseGet(() -> createNewInventory(request.getWarehouseType(), item.getProductCode(), item.getUnitCode(), item.getReferenceId(), finalExpiry));
+                    inv.setQuantity(inv.getQuantity().add(item.getQuantity()));
+                    inventoryRepository.save(inv);
 
-            // 3. Save Transaction
-            saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
-                    finalExpiry, request.getWarehouseType(), TransactionType.IMPORT, request.getReferenceType());
+                    // 3. Save Transaction
+                    saveTx(request.getReferenceId(), item.getProductCode(), item.getUnitCode(), item.getQuantity(),
+                            finalExpiry, request.getWarehouseType(), IMPORT, request.getReferenceType());
+                }
+            }
+            case RETURN_TO_SUPPLIER -> {
+                if (ReferenceType.INVALID_QUALITY.equals(request.getReferenceType()) ||
+                        ReferenceType.INVALID_LIST.equals(request.getReferenceType()) ||
+                        ReferenceType.INVALID_QUANTITY.equals(request.getReferenceType()) ||
+                        ReferenceType.DAMAGED.equals(request.getReferenceType())
+                ) {
+                    ExportRequest convert = new ExportRequest();
+                    convert.setReferenceId(request.getReferenceId());
+                    convert.setWarehouseType(request.getWarehouseType());
+                    convert.setTransactionType(request.getTransactionType());
+                    convert.setReferenceType(request.getReferenceType());
+                    convert.setProcessDate(request.getProcessDate());
+                    convert.setNote(request.getNote());
+                    List<ExportItemRequest> requests = new ArrayList<>();
+                    for (ImportItemRequest item : request.getItems()) {
+                        ExportItemRequest expRequest = new ExportItemRequest();
+                        expRequest.setReferenceId(item.getReferenceId());
+                        expRequest.setProductCode(item.getProductCode());
+                        expRequest.setPriceCode(item.getPriceCode());
+                        expRequest.setUnitCode(item.getUnitCode());
+                        expRequest.setQuantity(item.getQuantity());
+                        expRequest.setCostPrice(item.getCostPrice());
+                        requests.add(expRequest);
+                    }
+                    convert.setItems(requests);
+
+                    for (ExportItemRequest item : convert.getItems()) {
+                        // Check product exist
+                        productRepository.findByCode(item.getProductCode())
+                                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
+                        handleReturnToSupplier(convert, item);
+                    }
+                }
+            }
+
+
         }
-
         return buildImportResponse(request);
     }
 
@@ -125,52 +166,19 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
 
         switch (request.getReferenceType()) {
             // 🔁 KITCHEN → MAIN_STORAGE
-            case RETURN_TO_STORAGE, INVALID_QUALITY, INVALID_QUANTITY -> transferStock(
+            case INVALID_QUALITY, INVALID_QUANTITY, INVALID_LIST, DAMAGED -> transferStock(
                     WarehouseType.KITCHEN,
                     WarehouseType.MAIN_STORAGE,
                     request,
                     item
             );
-//            // ❌ Trả NCC / loại khỏi hệ thống
-//            case RETURN_TO_SUPPLIER, INVALID_QUALITY, INVALID_QUANTITY -> {
-//
-//                Map<LocalDateTime, BigDecimal> batches = deductStockFEFO(
-//                        request.getWarehouseType(),
-//                        item.getProductCode(),
-//                        item.getQuantity()
-//                );
-//
-//                batches.forEach((expiry, qty) -> {
-//                    // EXPORT ra ngoài (LUÔN âm)
-//                    saveTx(
-//                            request.getReferenceId(),
-//                            item.getProductCode(),
-//                            item.getUnitCode(),
-//                            qty.negate(),
-//                            expiry,
-//                            request.getWarehouseType(),
-//                            TransactionType.RETURN,
-//                            request.getReferenceType()
-//                    );
-//                });
-//            }
         }
     }
 
     private void handleReturnToSupplier(ExportRequest request, ExportItemRequest item) {
 
         switch (request.getReferenceType()) {
-//            // 🔁 KITCHEN → MAIN_STORAGE
-//            case RETURN_TO_STORAGE -> transferStock(
-//                    WarehouseType.KITCHEN,
-//                    WarehouseType.MAIN_STORAGE,
-//                    request,
-//                    item
-//            );
-
-            // ❌ Trả NCC / loại khỏi hệ thống
-            case RETURN_TO_SUPPLIER, INVALID_QUALITY, INVALID_QUANTITY -> {
-
+            case DAMAGED, INVALID_QUALITY, INVALID_QUANTITY, INVALID_LIST -> {
                 Map<LocalDateTime, BigDecimal> batches = deductStockFEFO(
                         request.getWarehouseType(),
                         item.getProductCode(),
@@ -346,7 +354,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                     qty,
                     expiry,
                     to,
-                    TransactionType.IMPORT,
+                    IMPORT,
                     request.getReferenceType()
             );
         });

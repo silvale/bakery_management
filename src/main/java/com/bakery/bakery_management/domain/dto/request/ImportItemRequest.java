@@ -11,18 +11,14 @@ import java.time.LocalDateTime;
 @Setter
 public class ImportItemRequest {
 
+    private String referenceId;
     private String productCode;
     private String priceCode;
-    private BigDecimal quantity;
     private String unitCode;
-    private String referenceId;
-
-    // Control Expiry từ FE
+    private BigDecimal quantity;
     private ExpiryInputType expiryType;
     private Integer manualExpiryDays;
     private LocalDateTime manualExpiryDate;
-
-    // Price sync
     private BigDecimal costPrice;
 
 }

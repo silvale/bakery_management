@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,7 +19,7 @@ public class ImportRequest {
     @NotBlank
     private String referenceId;
 
-    private LocalDate processDate;
+    private LocalDateTime processDate;
 
     @NotNull
     private WarehouseType warehouseType;
