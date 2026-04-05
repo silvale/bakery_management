@@ -7,6 +7,6 @@ public enum TransactionType {
     ADJUSTMENT, // Adjustment điều chỉnh tồn kho
     DISCARD,
     SALE,
-    PRODUCT_OUT,
-    PRODUCT_IN
+    RETURN_TO_STORAGE,
+    RETURN_TO_SUPPLIER
 }

@@ -21,6 +21,7 @@ public class ProductResponse extends BaseResponse {
     private ProductType type;
     private ReferenceResponse unit;
     private StatusCode status;
+    private String priceCodeDefault;
     private BigDecimal currentSalesPrice;
     private BigDecimal currentCostPrice;
     private ExpiryInputType expiryType;

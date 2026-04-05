@@ -18,6 +18,7 @@ public class InventoryResponse extends BaseResponse {
     private WarehouseType warehouseType;
     private ReferenceResponse product;
     private ReferenceResponse unit;
+    private String priceCodeDefault;
     private BigDecimal currentSalesPrice;
     private BigDecimal currentCostPrice;
     private BigDecimal quantity;

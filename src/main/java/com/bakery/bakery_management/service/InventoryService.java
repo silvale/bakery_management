@@ -80,15 +80,17 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     public ExportResponse processExport(ExportRequest request) {
 
         for (ExportItemRequest item : request.getItems()) {
-
-            Product product = productRepository.findByCode(item.getProductCode())
+            // Check product exist
+            productRepository.findByCode(item.getProductCode())
                     .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND, "SP không tồn tại"));
 
             switch (request.getTransactionType()) {
 
                 case EXPORT -> handleExport(request, item);
 
-                case RETURN -> handleReturn(request, item);
+                case RETURN_TO_STORAGE -> handleReturnToStorage(request, item);
+
+                case RETURN_TO_SUPPLIER -> handleReturnToSupplier(request, item);
 
                 case DISCARD -> handleDiscard(request, item);
 
@@ -119,17 +121,52 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
         }
     }
 
-    private void handleReturn(ExportRequest request, ExportItemRequest item) {
+    private void handleReturnToStorage(ExportRequest request, ExportItemRequest item) {
 
         switch (request.getReferenceType()) {
-
             // 🔁 KITCHEN → MAIN_STORAGE
-            case RETURN_TO_STORAGE -> transferStock(
+            case RETURN_TO_STORAGE, INVALID_QUALITY, INVALID_QUANTITY -> transferStock(
                     WarehouseType.KITCHEN,
                     WarehouseType.MAIN_STORAGE,
                     request,
                     item
             );
+//            // ❌ Trả NCC / loại khỏi hệ thống
+//            case RETURN_TO_SUPPLIER, INVALID_QUALITY, INVALID_QUANTITY -> {
+//
+//                Map<LocalDateTime, BigDecimal> batches = deductStockFEFO(
+//                        request.getWarehouseType(),
+//                        item.getProductCode(),
+//                        item.getQuantity()
+//                );
+//
+//                batches.forEach((expiry, qty) -> {
+//                    // EXPORT ra ngoài (LUÔN âm)
+//                    saveTx(
+//                            request.getReferenceId(),
+//                            item.getProductCode(),
+//                            item.getUnitCode(),
+//                            qty.negate(),
+//                            expiry,
+//                            request.getWarehouseType(),
+//                            TransactionType.RETURN,
+//                            request.getReferenceType()
+//                    );
+//                });
+//            }
+        }
+    }
+
+    private void handleReturnToSupplier(ExportRequest request, ExportItemRequest item) {
+
+        switch (request.getReferenceType()) {
+//            // 🔁 KITCHEN → MAIN_STORAGE
+//            case RETURN_TO_STORAGE -> transferStock(
+//                    WarehouseType.KITCHEN,
+//                    WarehouseType.MAIN_STORAGE,
+//                    request,
+//                    item
+//            );
 
             // ❌ Trả NCC / loại khỏi hệ thống
             case RETURN_TO_SUPPLIER, INVALID_QUALITY, INVALID_QUANTITY -> {
@@ -149,7 +186,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                             qty.negate(),
                             expiry,
                             request.getWarehouseType(),
-                            TransactionType.RETURN,
+                            TransactionType.RETURN_TO_SUPPLIER,
                             request.getReferenceType()
                     );
                 });
@@ -185,12 +222,9 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
     }
 
     private void handleAdjustment(ExportRequest request, ExportItemRequest item) {
-
         switch (request.getReferenceType()) {
-
             // ➕ Tăng kho
             case INCREATE -> {
-
                 addStock(
                         request.getWarehouseType(),
                         item.getProductCode(),
@@ -214,7 +248,6 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
 
             // ➖ Giảm kho
             case DECREATE -> {
-
                 Map<LocalDateTime, BigDecimal> batches = deductStockFEFO(
                         request.getWarehouseType(),
                         item.getProductCode(),
@@ -357,14 +390,6 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
         }
     }
 
-    //
-//    private BigDecimal calculateDeductQty(BigDecimal currentQty, BigDecimal remaining) {
-//        if (currentQty.compareTo(remaining) >= 0) {
-//            return remaining;
-//        }
-//        return currentQty;
-//    }
-//
     private void addStock(WarehouseType warehouse,
                           String productCode,
                           String unitCode,
@@ -477,8 +502,12 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
         for (InventoryResponse invRes : responseList) {
             String code = invRes.getProduct().getCode();
             ProductPriceResponse priceRes = priceMap.get(code);
-            invRes.setCurrentCostPrice(priceRes != null ? priceRes.getCostPrice() : BigDecimal.ZERO);
-            invRes.setCurrentSalesPrice(priceRes != null ? priceRes.getSalePrice() : BigDecimal.ZERO);
+            if (priceRes.getIsDefault()) {
+                invRes.setPriceCodeDefault(priceRes.getCode());
+                invRes.setCurrentCostPrice(priceRes.getCostPrice());
+                invRes.setCurrentSalesPrice(priceRes.getSalePrice());
+            }
+
         }
 
         return PageResult.ofPage(new PageImpl<>(responseList, pageable, entities.size()));
