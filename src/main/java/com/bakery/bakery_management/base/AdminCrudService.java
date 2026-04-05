@@ -5,5 +5,6 @@ import java.util.UUID;
 public interface AdminCrudService<REQ> {
     OperatorResult create(REQ request);
     OperatorResult update(UUID id, REQ request);
-    void delete(UUID id);
+    void deactiveById(UUID id);
+    void deactiveByCode(String code);
 }

@@ -25,7 +25,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
     """)
     Optional<Inventory> findByUniqueStock(String productCode, WarehouseType warehouseType, LocalDateTime expiryDate);
 
-    Page<Inventory> findByWarehouseType(WarehouseType warehouseType, Pageable pageable);
+    List<Inventory> findByWarehouseType(WarehouseType warehouseType);
 
     Optional<Inventory> findByWarehouseTypeAndProductCodeAndExpiryDate(WarehouseType warehouseType, String productCode, LocalDateTime expiryDate);
 

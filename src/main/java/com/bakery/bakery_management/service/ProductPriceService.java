@@ -9,7 +9,6 @@ import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.bakery.bakery_management.mapper.AdminBaseMapper;
 import com.bakery.bakery_management.mapper.ProductPriceMapper;
 import com.bakery.bakery_management.repository.ProductPriceRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,8 +114,17 @@ public class ProductPriceService extends AdminOperationService<ProductPriceReque
         return a.compareTo(b) != 0;
     }
 
-    private String generatePriceCode() {
-        return "PRC-" + System.currentTimeMillis();
+    public List<ProductPrice> getListPriceByProduct(String productCode) {
+        return repository.findByProductCode(productCode);
     }
 
+    @Override
+    public void deactiveByCode(String code) {
+        ProductPrice price = repository.findByCode(code).orElse(null);
+        if (price != null) {
+            price.setIsDefault(false);
+            price.setStatus(StatusCode.INACTIVE);
+            repository.save(price);
+        }
+    }
 }

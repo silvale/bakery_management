@@ -78,15 +78,21 @@ public abstract class AdminOperationService<REQ, RES, E extends JpaEntity<UUID>>
 
     @Override
     @Transactional
-    public void delete(UUID id) {
+    public void deactiveById(UUID id) {
         E entity = getRepository().findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "Không tìm thấy dữ liệu để xóa"));
 
         beforeDelete(id, entity);
 
-        entity.setStatus(StatusCode.DELETED);
+        entity.setStatus(StatusCode.INACTIVE);
 
         getRepository().save(entity);
+    }
+
+    @Override
+    @Transactional
+    public void deactiveByCode(String code) {
+       // Overide when want to use
     }
 
     @Override

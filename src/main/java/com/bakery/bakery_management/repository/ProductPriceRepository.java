@@ -16,6 +16,8 @@ public interface ProductPriceRepository extends JpaRepository<ProductPrice, UUID
 
     Optional<ProductPrice> findByCode(String code);
 
+    List<ProductPrice> findByProductCode(String code);
+
     @Modifying
     @Query("""
         UPDATE ProductPrice p

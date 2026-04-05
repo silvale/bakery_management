@@ -147,7 +147,11 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     @Override
     protected void afterUpdate(ProductRequest request, Product entity) {
         List<ProductPriceRequest> prices = request.getPrices();
+        List<ProductPrice> pricesOfProduct = priceService.getListPriceByProduct(entity.getCode());
         for (ProductPriceRequest price : prices) {
+            if(!pricesOfProduct.contains(price.getCode())){
+                priceService.deactiveByCode(price.getCode());
+            }
             priceService.syncPrice(price.getCode(), request.getCode(), price.getUnitCode(), price.getCostPrice(), price.getSalePrice(), price.isDefault(), request.getType());
         }
 
