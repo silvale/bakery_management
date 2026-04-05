@@ -14,4 +14,8 @@ public interface ProductPriceMapper extends AdminBaseMapper<ProductPriceRequest,
 
     @Mapping(source = "isDefault", target = "isDefault")
     ProductPriceResponse toResponse(ProductPrice entity);
+
+    @Mapping(source = "default", target = "isDefault")
+    ProductPrice toEntity(ProductPriceRequest request);
+
 }
