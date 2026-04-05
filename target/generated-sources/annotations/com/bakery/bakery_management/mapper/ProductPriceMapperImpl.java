@@ -10,30 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-05T18:42:05+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
+    date = "2026-04-05T22:58:55+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
 public class ProductPriceMapperImpl implements ProductPriceMapper {
-
-    @Override
-    public ProductPrice toEntity(ProductPriceRequest request) {
-        if ( request == null ) {
-            return null;
-        }
-
-        ProductPrice productPrice = new ProductPrice();
-
-        productPrice.setStatus( request.getStatus() );
-        productPrice.setCode( request.getCode() );
-        productPrice.setProductCode( request.getProductCode() );
-        productPrice.setUnitCode( request.getUnitCode() );
-        productPrice.setCostPrice( request.getCostPrice() );
-        productPrice.setSalePrice( request.getSalePrice() );
-        productPrice.setAppliedDate( request.getAppliedDate() );
-
-        return productPrice;
-    }
 
     @Override
     public ProductPrice update(ProductPriceRequest request, ProductPrice entity) {
@@ -163,5 +144,25 @@ public class ProductPriceMapperImpl implements ProductPriceMapper {
         productPriceResponse.setStatus( entity.getStatus() );
 
         return productPriceResponse;
+    }
+
+    @Override
+    public ProductPrice toEntity(ProductPriceRequest request) {
+        if ( request == null ) {
+            return null;
+        }
+
+        ProductPrice productPrice = new ProductPrice();
+
+        productPrice.setIsDefault( request.isDefault() );
+        productPrice.setStatus( request.getStatus() );
+        productPrice.setCode( request.getCode() );
+        productPrice.setProductCode( request.getProductCode() );
+        productPrice.setUnitCode( request.getUnitCode() );
+        productPrice.setCostPrice( request.getCostPrice() );
+        productPrice.setSalePrice( request.getSalePrice() );
+        productPrice.setAppliedDate( request.getAppliedDate() );
+
+        return productPrice;
     }
 }
