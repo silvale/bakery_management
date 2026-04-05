@@ -6,24 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="88874637-65e0-4a96-84aa-c9030d19f652" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/response/InventoryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/response/InventoryResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/response/ProductResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/dto/response/ProductResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/enums/TransactionType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/domain/enums/TransactionType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/InventoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/InventoryResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/InventoryResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/ProductResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/dto/Response/ProductResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/enums/TransactionType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/domain/enums/TransactionType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/service/InventoryService$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/service/InventoryService$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/service/InventoryService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bakery/bakery_management/service/InventoryService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/CommonMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/CommonMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/FormulaComponentMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/FormulaComponentMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/FormulaMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/FormulaMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/InventoryMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/InventoryMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductPriceMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/ProductPriceMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/StockTransactionMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/StockTransactionMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/UnitConversionMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/UnitConversionMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/UnitMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/bakery/bakery_management/mapper/UnitMapperImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/ProductService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,11 +117,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/InventoryService.java</url>
           <line>311</line>
           <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bakery/bakery_management/service/InventoryService.java</url>
-          <line>278</line>
-          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

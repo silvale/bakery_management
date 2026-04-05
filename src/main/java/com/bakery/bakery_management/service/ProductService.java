@@ -266,8 +266,11 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
             }
 
             ProductPriceResponse priceRes = priceMap.get(entity.getCode());
-            res.setCurrentSalesPrice(priceRes != null ? priceRes.getSalePrice() : BigDecimal.ZERO);
-            res.setCurrentCostPrice(priceRes != null ? priceRes.getCostPrice() : BigDecimal.ZERO);
+            if (priceRes.getIsDefault()) {
+                res.setPriceCodeDefault(priceRes.getCode());
+                res.setCurrentCostPrice(priceRes.getCostPrice());
+                res.setCurrentSalesPrice(priceRes.getSalePrice());
+            }
 
             res.setPrices(null);
         }
