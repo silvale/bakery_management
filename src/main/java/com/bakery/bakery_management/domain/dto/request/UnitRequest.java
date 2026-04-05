@@ -1,13 +1,11 @@
 package com.bakery.bakery_management.domain.dto.request;
 
+import com.bakery.bakery_management.domain.enums.StatusCode;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -16,9 +14,9 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UnitRequest {
 
-    private String fromUnitCode;
+    private String code;
 
-    private String toUnitCode;
+    private String name;
 
-    private BigDecimal ratio;
+    private StatusCode status;
 }
