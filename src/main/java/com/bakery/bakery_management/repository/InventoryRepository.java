@@ -25,6 +25,22 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
     """)
     Optional<Inventory> findByUniqueStock(String productCode, WarehouseType warehouseType, LocalDateTime expiryDate);
 
+    @Query("""
+        SELECT i FROM Inventory i 
+        WHERE i.warehouseType = :warehouseType 
+          AND i.quantity > 0
+        ORDER BY i.productCode
+    """)
+    List<Inventory> findProductAvailableInInventory(WarehouseType warehouseType);
+
+    @Query("""
+        SELECT i FROM Inventory i 
+        WHERE i.warehouseType = :warehouseType 
+          AND i.quantity = 0
+          AND i.expiryDate IS NOT DISTINCT FROM :expiryDate
+    """)
+    List<Inventory> findProductHistoryInInventory(WarehouseType warehouseType);
+
     List<Inventory> findByWarehouseType(WarehouseType warehouseType);
 
     Optional<Inventory> findByWarehouseTypeAndProductCodeAndExpiryDate(WarehouseType warehouseType, String productCode, LocalDateTime expiryDate);

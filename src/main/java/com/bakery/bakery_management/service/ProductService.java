@@ -11,26 +11,20 @@ import com.bakery.bakery_management.domain.dto.response.FormulaComponentResponse
 import com.bakery.bakery_management.domain.dto.response.FormulaResponse;
 import com.bakery.bakery_management.domain.dto.response.ProductPriceResponse;
 import com.bakery.bakery_management.domain.dto.response.ProductResponse;
-import com.bakery.bakery_management.domain.entity.Formula;
-import com.bakery.bakery_management.domain.entity.FormulaComponent;
-import com.bakery.bakery_management.domain.entity.Product;
-import com.bakery.bakery_management.domain.entity.ProductPrice;
+import com.bakery.bakery_management.domain.entity.*;
 import com.bakery.bakery_management.domain.enums.ExpiryInputType;
 import com.bakery.bakery_management.domain.enums.ProductType;
 import com.bakery.bakery_management.domain.enums.StatusCode;
+import com.bakery.bakery_management.domain.enums.WarehouseType;
 import com.bakery.bakery_management.exception.BusinessException;
 import com.bakery.bakery_management.exception.ErrorCode;
 import com.bakery.bakery_management.mapper.*;
-import com.bakery.bakery_management.repository.FormulaComponentRepository;
-import com.bakery.bakery_management.repository.FormulaRepository;
-import com.bakery.bakery_management.repository.ProductPriceRepository;
-import com.bakery.bakery_management.repository.ProductRepository;
+import com.bakery.bakery_management.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,7 +36,7 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
     private final ProductPriceRepository priceRepository;
     private final FormulaRepository formulaRepository;
     private final FormulaComponentRepository componentRepository;
-
+    private final InventoryRepository inventoryRepository;
 
     private final ProductMapper productMapper;
     private final FormulaMapper formulaMapper;
@@ -51,7 +45,6 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
 
     private final ProductPriceService priceService;
     private final UnitService unitService;
-    private final FormulaCostService formulaCostService;
 
 
     @Override
@@ -149,7 +142,7 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
         List<ProductPriceRequest> prices = request.getPrices();
         List<ProductPrice> pricesOfProduct = priceService.getListPriceByProduct(entity.getCode());
         for (ProductPriceRequest price : prices) {
-            if(!pricesOfProduct.contains(price.getCode())){
+            if (!pricesOfProduct.contains(price.getCode())) {
                 priceService.deactiveByCode(price.getCode());
             }
             priceService.syncPrice(price.getCode(), request.getCode(), price.getUnitCode(), price.getCostPrice(), price.getSalePrice(), price.isDefault(), request.getType());

@@ -3,12 +3,8 @@ package com.bakery.bakery_management.service;
 
 import com.bakery.bakery_management.Utils.MappingUtils;
 import com.bakery.bakery_management.base.AdminOperationService;
-import com.bakery.bakery_management.domain.PageResult;
 import com.bakery.bakery_management.domain.dto.request.*;
-import com.bakery.bakery_management.domain.dto.response.ExportResponse;
-import com.bakery.bakery_management.domain.dto.response.ImportResponse;
-import com.bakery.bakery_management.domain.dto.response.InventoryResponse;
-import com.bakery.bakery_management.domain.dto.response.ProductPriceResponse;
+import com.bakery.bakery_management.domain.dto.response.*;
 import com.bakery.bakery_management.domain.entity.Inventory;
 import com.bakery.bakery_management.domain.entity.Product;
 import com.bakery.bakery_management.domain.entity.StockTransaction;
@@ -24,8 +20,6 @@ import com.bakery.bakery_management.repository.InventoryRepository;
 import com.bakery.bakery_management.repository.ProductRepository;
 import com.bakery.bakery_management.repository.StockTransactionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -456,8 +450,8 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                 .build();
     }
 
-    public PageResult<InventoryResponse> getListInventoryByType(Pageable pageable, String warehoueType) {
-        List<Inventory> entities = inventoryRepository.findByWarehouseType(WarehouseType.valueOf(warehoueType));
+    public List<InventoryResponse> getListInventoryByType(String warehoueType) {
+        List<Inventory> entities = inventoryRepository.findProductAvailableInInventory(WarehouseType.valueOf(warehoueType));
 
         Map<String, Inventory> grouped = entities.stream()
                 .collect(Collectors.toMap(
@@ -477,9 +471,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                         }
                 ));
 
-        List<Inventory> groupedList = grouped.values().stream()
-                .filter(inv -> inv.getQuantity() != null && inv.getQuantity().compareTo(BigDecimal.ZERO) > 0)
-                .toList();
+        List<Inventory> groupedList = grouped.values().stream().toList();
 
         List<InventoryResponse> responseList = groupedList.stream()
                 .map(getMapper()::toResponse)
@@ -518,7 +510,35 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
 
         }
 
-        return PageResult.ofPage(new PageImpl<>(responseList, pageable, entities.size()));
+        return responseList;
+    }
+
+    public List<ProductResponse> getAvailableProduct() {
+        List<InventoryResponse> inventories =
+                getListInventoryByType(WarehouseType.MAIN_STORAGE.name());
+
+        if (inventories.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Set<String> codes = inventories.stream()
+                .map(i -> i.getProduct().getCode())
+                .collect(Collectors.toSet());
+
+        Map<String, Product> productMap = productRepository.findByCodeIn(codes)
+                .stream()
+                .collect(Collectors.toMap(Product::getCode, p -> p));
+
+        return inventories.stream()
+                .map(inv -> {
+                    Product product = productMap.get(inv.getProduct().getCode());
+                    if (product == null) return null;
+
+                    return mapFromInventory(inv, product);
+                })
+                .filter(Objects::nonNull)
+                .filter(res -> res.getAvailableQuantity().compareTo(BigDecimal.ZERO) > 0)
+                .toList();
     }
 
     @Override
@@ -636,5 +656,21 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                     LocalDateTime.now().with(LocalTime.MAX).plusDays(item.getManualExpiryDays() != null ? item.getManualExpiryDays() : p.getDefaultExpiryDays());
             default -> null;
         };
+    }
+
+
+    private ProductResponse mapFromInventory(InventoryResponse inv, Product product) {
+        ProductResponse res = new ProductResponse();
+        res.setCode(inv.getProduct().getCode());
+        res.setName(inv.getProduct().getName());
+        res.setType(product.getType());
+        res.setUnit(inv.getUnit());
+        res.setPriceCodeDefault(inv.getPriceCodeDefault());
+        res.setCurrentCostPrice(inv.getCurrentCostPrice());
+        res.setCurrentSalesPrice(inv.getCurrentSalesPrice());
+        res.setExpiryType(product.getExpiryType());
+        res.setDefaultExpiryDays(product.getDefaultExpiryDays());
+        res.setAvailableQuantity(inv.getQuantity());
+        return res;
     }
 }

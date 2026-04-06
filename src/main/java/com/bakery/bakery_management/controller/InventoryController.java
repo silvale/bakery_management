@@ -9,14 +9,18 @@ import com.bakery.bakery_management.domain.dto.request.InventoryRequest;
 import com.bakery.bakery_management.domain.dto.response.ExportResponse;
 import com.bakery.bakery_management.domain.dto.response.ImportResponse;
 import com.bakery.bakery_management.domain.dto.response.InventoryResponse;
+import com.bakery.bakery_management.domain.dto.response.ProductResponse;
 import com.bakery.bakery_management.domain.entity.Inventory;
 import com.bakery.bakery_management.service.InventoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/inventory")
@@ -37,7 +41,13 @@ public class InventoryController extends AdminBaseResource<InventoryRequest, Inv
 
     @GetMapping("/warehouse/{warehouse}")
     public PageResult<InventoryResponse> getListInventory(@PathVariable String warehouse, @ParameterObject Pageable pageable) {
-        return inventoryService.getListInventoryByType(pageable, warehouse);
+        List<InventoryResponse> responseList = inventoryService.getListInventoryByType(warehouse);
+        return PageResult.ofPage(new PageImpl<>(responseList, pageable, responseList.size()));
+    }
+
+    @GetMapping("/available-product")
+    public List<ProductResponse> getAvailableProduct() {
+        return inventoryService.getAvailableProduct();
     }
 
     @Override

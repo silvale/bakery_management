@@ -29,6 +29,7 @@ public class ProductResponse extends BaseResponse {
     private LocalDate fixedExpiryDate;
     private List<ProductPriceResponse> prices;
     private FormulaResponse formula;
+    private BigDecimal availableQuantity;
 
 
 }
