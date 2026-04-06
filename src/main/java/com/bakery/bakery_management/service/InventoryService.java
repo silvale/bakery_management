@@ -661,6 +661,7 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
 
     private ProductResponse mapFromInventory(InventoryResponse inv, Product product) {
         ProductResponse res = new ProductResponse();
+        res.setId(product.getId());
         res.setCode(inv.getProduct().getCode());
         res.setName(inv.getProduct().getName());
         res.setType(product.getType());
