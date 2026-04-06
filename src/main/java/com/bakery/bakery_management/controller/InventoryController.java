@@ -46,8 +46,9 @@ public class InventoryController extends AdminBaseResource<InventoryRequest, Inv
     }
 
     @GetMapping("/available-product")
-    public List<ProductResponse> getAvailableProduct() {
-        return inventoryService.getAvailableProduct();
+    public PageResult<ProductResponse> getAvailableProduct(@ParameterObject Pageable pageable) {
+        List<ProductResponse> responseList = inventoryService.getAvailableProduct();
+        return PageResult.ofPage(new PageImpl<>(responseList, pageable, responseList.size()));
     }
 
     @Override
