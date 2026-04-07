@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-07T23:24:44+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 25 (Eclipse Adoptium)"
+    date = "2026-04-08T00:07:27+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
@@ -32,10 +32,12 @@ public class ProductMapperImpl implements ProductMapper {
         product.setCode( request.getCode() );
         product.setName( request.getName() );
         product.setUnitCode( request.getUnitCode() );
+        product.setSupplierCode( request.getSupplierCode() );
         product.setType( request.getType() );
         product.setExpiryType( request.getExpiryType() );
         product.setDefaultExpiryDays( request.getDefaultExpiryDays() );
         product.setFixedExpiryDate( request.getFixedExpiryDate() );
+        product.setWarningQuantity( request.getWarningQuantity() );
         product.setPrices( productPriceRequestListToProductPriceList( request.getPrices() ) );
 
         return product;
@@ -51,10 +53,12 @@ public class ProductMapperImpl implements ProductMapper {
         entity.setCode( request.getCode() );
         entity.setName( request.getName() );
         entity.setUnitCode( request.getUnitCode() );
+        entity.setSupplierCode( request.getSupplierCode() );
         entity.setType( request.getType() );
         entity.setExpiryType( request.getExpiryType() );
         entity.setDefaultExpiryDays( request.getDefaultExpiryDays() );
         entity.setFixedExpiryDate( request.getFixedExpiryDate() );
+        entity.setWarningQuantity( request.getWarningQuantity() );
         if ( entity.getPrices() != null ) {
             List<ProductPrice> list = productPriceRequestListToProductPriceList( request.getPrices() );
             if ( list != null ) {
@@ -93,6 +97,9 @@ public class ProductMapperImpl implements ProductMapper {
         if ( request.getUnitCode() != null ) {
             entity.setUnitCode( request.getUnitCode() );
         }
+        if ( request.getSupplierCode() != null ) {
+            entity.setSupplierCode( request.getSupplierCode() );
+        }
         if ( request.getType() != null ) {
             entity.setType( request.getType() );
         }
@@ -104,6 +111,9 @@ public class ProductMapperImpl implements ProductMapper {
         }
         if ( request.getFixedExpiryDate() != null ) {
             entity.setFixedExpiryDate( request.getFixedExpiryDate() );
+        }
+        if ( request.getWarningQuantity() != null ) {
+            entity.setWarningQuantity( request.getWarningQuantity() );
         }
         if ( entity.getPrices() != null ) {
             List<ProductPrice> list = productPriceRequestListToProductPriceList( request.getPrices() );
@@ -144,6 +154,7 @@ public class ProductMapperImpl implements ProductMapper {
         product.setExpiryType( entity.getExpiryType() );
         product.setDefaultExpiryDays( entity.getDefaultExpiryDays() );
         product.setFixedExpiryDate( entity.getFixedExpiryDate() );
+        product.setWarningQuantity( entity.getWarningQuantity() );
         List<ProductPrice> list = entity.getPrices();
         if ( list != null ) {
             product.setPrices( new ArrayList<ProductPrice>( list ) );
@@ -173,6 +184,7 @@ public class ProductMapperImpl implements ProductMapper {
         productResponse.setDefaultExpiryDays( entity.getDefaultExpiryDays() );
         productResponse.setFixedExpiryDate( entity.getFixedExpiryDate() );
         productResponse.setPrices( productPriceListToProductPriceResponseList( entity.getPrices() ) );
+        productResponse.setWarningQuantity( entity.getWarningQuantity() );
 
         return productResponse;
     }
@@ -201,10 +213,12 @@ public class ProductMapperImpl implements ProductMapper {
         entity.setCode( request.getCode() );
         entity.setName( request.getName() );
         entity.setUnitCode( request.getUnitCode() );
+        entity.setSupplierCode( request.getSupplierCode() );
         entity.setType( request.getType() );
         entity.setExpiryType( request.getExpiryType() );
         entity.setDefaultExpiryDays( request.getDefaultExpiryDays() );
         entity.setFixedExpiryDate( request.getFixedExpiryDate() );
+        entity.setWarningQuantity( request.getWarningQuantity() );
         if ( entity.getPrices() != null ) {
             List<ProductPrice> list = productPriceRequestListToProductPriceList( request.getPrices() );
             if ( list != null ) {

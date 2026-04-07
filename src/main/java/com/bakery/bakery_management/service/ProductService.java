@@ -349,4 +349,17 @@ public class ProductService extends AdminOperationService<ProductRequest, Produc
                 (existing, replacement) -> existing // Nếu trùng Code thì lấy cái đầu tiên, tránh crash
         ));
     }
+
+    public Map<String, Integer> getWarningQuantity(List<String> codes) {
+        if (CollectionUtils.isEmpty(codes)) {
+            return Collections.emptyMap();
+        }
+        List<Product> products = repository.findAllByCodeInAndStatus(codes, StatusCode.ACTIVE);
+        return products.stream()
+                .filter(p -> p.getCode() != null && p.getWarningQuantity() != null && p.getWarningQuantity() > 0)
+                .collect(Collectors.toMap(
+                        Product::getCode,
+                        Product::getWarningQuantity
+                ));
+    }
 }

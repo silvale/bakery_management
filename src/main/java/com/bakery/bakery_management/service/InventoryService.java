@@ -498,7 +498,9 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                 .filter(Objects::nonNull)
                 .toList();
 
+
         Map<String, ProductPriceResponse> priceMap = priceService.getDefaultPriceResponsesByCodes(codes);
+        Map<String, Integer> warningQuantityMap = productService.getWarningQuantity(codes);
         for (InventoryResponse invRes : responseList) {
             String code = invRes.getProduct().getCode();
             ProductPriceResponse priceRes = priceMap.get(code);
@@ -507,9 +509,8 @@ public class InventoryService extends AdminOperationService<InventoryRequest, In
                 invRes.setCurrentCostPrice(priceRes.getCostPrice());
                 invRes.setCurrentSalesPrice(priceRes.getSalePrice());
             }
-
+            invRes.setWarningQuantity(warningQuantityMap.get(code));
         }
-
         return responseList;
     }
 

@@ -31,6 +31,7 @@ public class ProductResponse extends BaseResponse {
     private List<ProductPriceResponse> prices;
     private FormulaResponse formula;
     private BigDecimal availableQuantity;
+    private Integer warningQuantity;
 
 
 }

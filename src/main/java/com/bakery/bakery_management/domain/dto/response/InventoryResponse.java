@@ -23,5 +23,5 @@ public class InventoryResponse extends BaseResponse {
     private BigDecimal currentCostPrice;
     private BigDecimal quantity;
     private LocalDateTime expiryDate;
-
+    private Integer warningQuantity;
 }

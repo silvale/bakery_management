@@ -40,6 +40,9 @@ public class Product extends JpaEntityAuditable<UUID> {
 
     private LocalDate fixedExpiryDate;
 
+    @Column(name = "warning_quantity")
+    private Integer warningQuantity;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @OrderBy("appliedDate DESC")
     private List<ProductPrice> prices = new ArrayList<>();

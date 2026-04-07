@@ -29,6 +29,8 @@ public class ProductRequest {
 
     private Integer defaultExpiryDays;
 
+    private Integer warningQuantity;
+
     private LocalDate fixedExpiryDate;
 
     List<ProductPriceRequest> prices;
