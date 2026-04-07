@@ -23,6 +23,7 @@ public class ProductRequest {
     private String name;
     private ProductType type;
     private String unitCode;
+    private String supplierCode;
     private StatusCode status;
     private ExpiryInputType expiryType;
 

@@ -26,6 +26,9 @@ public class Product extends JpaEntityAuditable<UUID> {
 
     private String unitCode;
 
+    @Column(name = "supplier_code")
+    private String supplierCode;
+
     @Enumerated(EnumType.STRING)
     private ProductType type;
 

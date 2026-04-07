@@ -20,6 +20,7 @@ public class ProductResponse extends BaseResponse {
     private String name;
     private ProductType type;
     private ReferenceResponse unit;
+    private ReferenceResponse supplier;
     private StatusCode status;
     private String priceCodeDefault;
     private BigDecimal currentSalesPrice;
